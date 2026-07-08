@@ -48,10 +48,11 @@
   .phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
   .phase-bar { width: 3px; height: 18px; border-radius: 2px; flex-shrink: 0; }
   .phase-title { font-family: 'Inter Tight', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
-  .week-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; }
+  .week-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; transition: border-color 0.4s ease, box-shadow 0.4s ease; }
   .week-card.travel { background: #f8fdf9; border-left: 3px solid var(--travel-accent); border-radius: 0 var(--radius) var(--radius) 0; }
   .week-card.taper { border-left: 3px solid var(--taper-accent); border-radius: 0 var(--radius) var(--radius) 0; }
   .week-card.raceweek { border-left: 3px solid var(--race-accent); border-radius: 0 var(--radius) var(--radius) 0; }
+  .week-card.week-complete { border-color: #c8a800 !important; box-shadow: 0 0 0 2px #ffd70033; }
   .week-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; }
   .week-label { font-family: 'Inter Tight', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-primary); }
   .week-dates { font-size: 12px; color: var(--text-muted); }
@@ -63,7 +64,7 @@
   .day-header-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; margin-bottom: 3px; }
   .dh { font-size: 10px; text-align: center; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; }
   .day-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
-  .day { position: relative; font-size: 10px; text-align: center; padding: 6px 2px 4px; border-radius: var(--radius-sm); background: var(--rest-bg); cursor: pointer; user-select: none; transition: transform 0.1s ease, box-shadow 0.1s ease; }
+  .day { position: relative; font-size: 10px; text-align: center; padding: 6px 2px 4px; border-radius: var(--radius-sm); background: var(--rest-bg); cursor: pointer; user-select: none; transition: transform 0.1s ease, box-shadow 0.1s ease; overflow: visible; }
   .day:not(.empty):not(.non-workout):hover { transform: scale(1.04); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
   .day:not(.empty):not(.non-workout):active { transform: scale(0.97); }
   .day.empty { background: transparent; cursor: default; }
@@ -88,11 +89,26 @@
   .section-div { height: 1px; background: var(--border-mid); margin: 2rem 0; }
   .reset-btn { display: block; margin: 2rem auto 0; padding: 8px 20px; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-secondary); background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
   .reset-btn:hover { background: var(--rest-bg); color: var(--text-primary); }
+
+  /* Emoji float animation */
+  .emoji-float { position: fixed; pointer-events: none; font-size: 22px; animation: floatUp 1.1s ease-out forwards; z-index: 9999; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-90px) scale(1.4); } }
+
+  /* Confetti canvas */
+  #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; }
+
+  /* Week complete toast */
+  .week-toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #1a1917; color: #fff; font-family: 'Inter Tight', sans-serif; font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 99px; z-index: 10000; pointer-events: none; opacity: 0; transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.35s ease; white-space: nowrap; }
+  .week-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
   @media (max-width: 600px) { .day .dv { font-size: 9px; } .day .dd { font-size: 8px; } .day .dp { font-size: 7px; } .header h1 { font-size: 22px; } }
-  @media print { body { background: white; padding: 1rem; } .week-card { break-inside: avoid; } }
+  @media print { body { background: white; padding: 1rem; } .week-card { break-inside: avoid; } #confetti-canvas { display: none; } }
 </style>
 </head>
 <body>
+<canvas id="confetti-canvas"></canvas>
+<div class="week-toast" id="week-toast"></div>
+
 <div class="page">
 
   <header class="header">
@@ -153,62 +169,62 @@
       <span class="phase-title">Phase 1 — Build · June 25 – July 19</span>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w1">
       <div class="week-top"><span class="week-label">Week 1 <span class="badge b-gray">Recovery / base</span></span><span class="week-dates">Jun 25 – Jun 29</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
         <div class="day non-workout rest"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w1-fri"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day run" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w1-sun"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day run" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
       </div>
       <p class="week-note">Felt strong on Jun 20 — short easy runs only before jumping into long runs next week.</p>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w2">
       <div class="week-top"><span class="week-label">Week 2 <span class="badge b-teal">Base</span></span><span class="week-dates">Jun 29 – Jul 5</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day strength" data-id="w2-mon"><span class="dd">Jun 29</span><span class="dv">Strength</span></div>
-        <div class="day run" data-id="w2-tue"><span class="dd">Jun 30</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w2-mon" data-emoji="💪"><span class="dd">Jun 29</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w2-tue" data-emoji="🏃‍♀️"><span class="dd">Jun 30</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 1</span><span class="dv">Rest</span></div>
         <div class="day-split">
-          <div class="day run day-top" data-id="w2-thu-run"><span class="dd">Jul 2</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-          <div class="day strength" data-id="w2-thu-str"><span class="dv">Strength</span></div>
+          <div class="day run day-top" data-id="w2-thu-run" data-emoji="🏃‍♀️"><span class="dd">Jul 2</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+          <div class="day strength" data-id="w2-thu-str" data-emoji="💪"><span class="dv">Strength</span></div>
         </div>
         <div class="day non-workout rest"><span class="dd">Jul 3</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w2-sat"><span class="dd">Jul 4</span><span class="dv">6 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w2-sat" data-emoji="🎽"><span class="dd">Jul 4</span><span class="dv">6 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 5</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Thu Jul 2: run first, then strength. Each can be checked off independently.</p>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w3">
       <div class="week-top"><span class="week-label">Week 3 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 6 – Jul 12</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day non-workout rest"><span class="dd">Jul 6</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w3-tue"><span class="dd">Jul 7</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w3-wed"><span class="dd">Jul 8</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w3-thu"><span class="dd">Jul 9</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w3-fri"><span class="dd">Jul 10</span><span class="dv">Strength</span></div>
-        <div class="day long" data-id="w3-sat"><span class="dd">Jul 11</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day run" data-id="w3-tue" data-emoji="🏃‍♀️"><span class="dd">Jul 7</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w3-wed" data-emoji="💪"><span class="dd">Jul 8</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w3-thu" data-emoji="⚡"><span class="dd">Jul 9</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w3-fri" data-emoji="💪"><span class="dd">Jul 10</span><span class="dv">Strength</span></div>
+        <div class="day long" data-id="w3-sat" data-emoji="🎽"><span class="dd">Jul 11</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 12</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Fri Jul 10 strength follows Thursday's tempo — keep it a lighter session than usual.</p>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w4">
       <div class="week-top"><span class="week-label">Week 4 <span class="badge b-amber">Cutback</span></span><span class="week-dates">Jul 13 – Jul 19</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w4-mon"><span class="dd">Jul 13</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w4-tue"><span class="dd">Jul 14</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w4-wed"><span class="dd">Jul 15</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
-        <div class="day strength" data-id="w4-thu"><span class="dd">Jul 16</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w4-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 13</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w4-tue" data-emoji="💪"><span class="dd">Jul 14</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w4-wed" data-emoji="⚡"><span class="dd">Jul 15</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
+        <div class="day strength" data-id="w4-thu" data-emoji="💪"><span class="dd">Jul 16</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 17</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w4-sat"><span class="dd">Jul 18</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w4-sat" data-emoji="🎽"><span class="dd">Jul 18</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 19</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Recovery week — keep effort easy, reduce strength volume ~20%</p>
@@ -224,72 +240,72 @@
       <span class="phase-title">Phase 2 — Peak · July 20 – August 26</span>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w5">
       <div class="week-top"><span class="week-label">Week 5 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 20 – Jul 26</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w5-mon"><span class="dd">Jul 20</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w5-tue"><span class="dd">Jul 21</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w5-wed"><span class="dd">Jul 22</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w5-thu"><span class="dd">Jul 23</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w5-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 20</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w5-tue" data-emoji="💪"><span class="dd">Jul 21</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w5-wed" data-emoji="⚡"><span class="dd">Jul 22</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w5-thu" data-emoji="💪"><span class="dd">Jul 23</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 24</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w5-sat"><span class="dd">Jul 25</span><span class="dv">10 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w5-sat" data-emoji="🎽"><span class="dd">Jul 25</span><span class="dv">10 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 26</span><span class="dv">Rest</span></div>
       </div>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w6">
       <div class="week-top"><span class="week-label">Week 6 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 27 – Aug 2</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w6-mon"><span class="dd">Jul 27</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w6-tue"><span class="dd">Jul 28</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w6-wed"><span class="dd">Jul 29</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w6-thu"><span class="dd">Jul 30</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w6-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 27</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w6-tue" data-emoji="💪"><span class="dd">Jul 28</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w6-wed" data-emoji="⚡"><span class="dd">Jul 29</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w6-thu" data-emoji="💪"><span class="dd">Jul 30</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 31</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w6-sat"><span class="dd">Aug 1</span><span class="dv">11 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w6-sat" data-emoji="🎽"><span class="dd">Aug 1</span><span class="dv">11 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 2</span><span class="dv">Rest</span></div>
       </div>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w7">
       <div class="week-top"><span class="week-label">Week 7 <span class="badge b-teal">Peak</span></span><span class="week-dates">Aug 3 – Aug 9</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w7-mon"><span class="dd">Aug 3</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w7-tue"><span class="dd">Aug 4</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w7-wed"><span class="dd">Aug 5</span><span class="dv">7 mi tempo</span><span class="dp">1mi wu · 5mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w7-thu"><span class="dd">Aug 6</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w7-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 3</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w7-tue" data-emoji="💪"><span class="dd">Aug 4</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w7-wed" data-emoji="⚡"><span class="dd">Aug 5</span><span class="dv">7 mi tempo</span><span class="dp">1mi wu · 5mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w7-thu" data-emoji="💪"><span class="dd">Aug 6</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 7</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w7-sat"><span class="dd">Aug 8</span><span class="dv">13 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w7-sat" data-emoji="🎽"><span class="dd">Aug 8</span><span class="dv">13 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 9</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Peak long run — simulate race conditions if possible</p>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w8">
       <div class="week-top"><span class="week-label">Week 8 <span class="badge b-amber">Cutback</span></span><span class="week-dates">Aug 10 – Aug 16</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w8-mon"><span class="dd">Aug 10</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w8-tue"><span class="dd">Aug 11</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w8-wed"><span class="dd">Aug 12</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w8-thu"><span class="dd">Aug 13</span><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w8-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 10</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w8-tue" data-emoji="💪"><span class="dd">Aug 11</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w8-wed" data-emoji="⚡"><span class="dd">Aug 12</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w8-thu" data-emoji="💪"><span class="dd">Aug 13</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 14</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w8-sat"><span class="dd">Aug 15</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day long" data-id="w8-sat" data-emoji="🎽"><span class="dd">Aug 15</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 16</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Reduce strength volume ~20% — fresher legs for travel matter more than a PR lift</p>
     </div>
 
-    <div class="week-card">
+    <div class="week-card" data-week="w9">
       <div class="week-top"><span class="week-label">Pre-travel wind-down</span><span class="week-dates">Aug 17 – Aug 26</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w9-mon"><span class="dd">Aug 17</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w9-tue"><span class="dd">Aug 18</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w9-wed"><span class="dd">Aug 19</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
-        <div class="day strength" data-id="w9-thu"><span class="dd">Aug 20</span><span class="dv">Strength (light)</span></div>
+        <div class="day run" data-id="w9-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 17</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w9-tue" data-emoji="💪"><span class="dd">Aug 18</span><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w9-wed" data-emoji="⚡"><span class="dd">Aug 19</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
+        <div class="day strength" data-id="w9-thu" data-emoji="💪"><span class="dd">Aug 20</span><span class="dv">Strength (light)</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 21</span><span class="dv">Rest</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 22</span><span class="dv">Rest</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 23</span><span class="dv">Rest</span></div>
@@ -307,7 +323,7 @@
       <span class="phase-title">Travel block · August 27 – September 10 · Singapore · Bali · Vietnam</span>
     </div>
 
-    <div class="week-card travel">
+    <div class="week-card travel" data-week="tw1">
       <div class="week-top"><span class="week-label">Travel week 1 <span class="badge b-teal">Maintain</span></span><span class="week-dates">Aug 24 – Aug 30</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
@@ -316,36 +332,36 @@
         <div class="day non-workout rest"><span class="dd">Aug 26</span><span class="dv">Rest</span></div>
         <div class="day flight non-workout"><span class="dd">Aug 27</span><span class="dv">✈ Flight to SG</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 28</span><span class="dv">Rest / arrive</span></div>
-        <div class="day run" data-id="tw1-sat"><span class="dd">Aug 29</span><span class="dv">Elliptical 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day strength" data-id="tw1-sun"><span class="dd">Aug 30</span><span class="dv">Bodyweight</span></div>
+        <div class="day run" data-id="tw1-sat" data-emoji="🌟"><span class="dd">Aug 29</span><span class="dv">Cardio 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day strength" data-id="tw1-sun" data-emoji="💪"><span class="dd">Aug 30</span><span class="dv">Bodyweight</span></div>
       </div>
     </div>
 
-    <div class="week-card travel">
+    <div class="week-card travel" data-week="tw2">
       <div class="week-top"><span class="week-label">Travel week 2 <span class="badge b-teal">Maintain</span></span><span class="week-dates">Aug 31 – Sep 6</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day travel-day non-workout"><span class="dd">Aug 31</span><span class="dv">Walk / explore</span></div>
-        <div class="day run" data-id="tw2-tue"><span class="dd">Sep 1</span><span class="dv">Elliptical 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day strength" data-id="tw2-wed"><span class="dd">Sep 2</span><span class="dv">Bodyweight</span></div>
+        <div class="day run" data-id="tw2-tue" data-emoji="🌟"><span class="dd">Sep 1</span><span class="dv">Cardio 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day strength" data-id="tw2-wed" data-emoji="💪"><span class="dd">Sep 2</span><span class="dv">Bodyweight</span></div>
         <div class="day travel-day non-workout"><span class="dd">Sep 3</span><span class="dv">Walk / explore</span></div>
-        <div class="day run" data-id="tw2-fri"><span class="dd">Sep 4</span><span class="dv">Elliptical 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day strength" data-id="tw2-sat"><span class="dd">Sep 5</span><span class="dv">Bodyweight</span></div>
+        <div class="day run" data-id="tw2-fri" data-emoji="🌟"><span class="dd">Sep 4</span><span class="dv">Cardio 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day strength" data-id="tw2-sat" data-emoji="💪"><span class="dd">Sep 5</span><span class="dv">Bodyweight</span></div>
         <div class="day travel-day non-workout"><span class="dd">Sep 6</span><span class="dv">Walk / explore</span></div>
       </div>
     </div>
 
-    <div class="week-card travel">
+    <div class="week-card travel" data-week="tw3">
       <div class="week-top"><span class="week-label">Travel week 3 <span class="badge b-teal">Wind-down</span></span><span class="week-dates">Sep 7 – Sep 10</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="tw3-mon"><span class="dd">Sep 7</span><span class="dv">Elliptical 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day run" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
         <div class="day non-workout rest"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
         <div class="day non-workout rest"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
         <div class="day flight non-workout"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
         <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
       </div>
-      <p class="week-note">Easy legs Monday, then rest before the long flight home on Thursday. Heat & humidity in SE Asia will push HR higher — slow down to compensate.</p>
+      <p class="week-note">Easy cardio Monday — walk, swim, treadmill, whatever's available. Then rest before the long flight home Thursday. Heat &amp; humidity in SE Asia will push HR higher — slow down to compensate.</p>
     </div>
   </div>
 
@@ -358,7 +374,7 @@
       <span class="phase-title">Compressed taper · September 11 – September 20</span>
     </div>
 
-    <div class="week-card taper">
+    <div class="week-card taper" data-week="ret1">
       <div class="week-top"><span class="week-label">Return &amp; reactivate</span><span class="week-dates">Sep 11 – Sep 13</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
@@ -370,16 +386,16 @@
       <p class="week-note">Three full rest days after the long-haul return flight before race week begins Monday.</p>
     </div>
 
-    <div class="week-card raceweek">
+    <div class="week-card raceweek" data-week="rw">
       <div class="week-top"><span class="week-label">Race week <span class="badge b-purple">Taper</span></span><span class="week-dates">Sep 14 – Sep 20</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="rw-mon"><span class="dd">Sep 14</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day run" data-id="rw-mon" data-emoji="🏃‍♀️"><span class="dd">Sep 14</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Sep 15</span><span class="dv">Rest</span></div>
-        <div class="day tempo" data-id="rw-wed"><span class="dd">Sep 16</span><span class="dv">3 mi strides</span><span class="dp">1mi wu · 1mi strides · 1mi cd</span></div>
+        <div class="day tempo" data-id="rw-wed" data-emoji="⚡"><span class="dd">Sep 16</span><span class="dv">3 mi strides</span><span class="dp">1mi wu · 1mi strides · 1mi cd</span></div>
         <div class="day non-workout rest"><span class="dd">Sep 17</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="rw-fri"><span class="dd">Sep 18</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day run" data-id="rw-sat"><span class="dd">Sep 19</span><span class="dv">2 mi shakeout</span><span class="dp">very easy · just moving</span></div>
+        <div class="day run" data-id="rw-fri" data-emoji="🏃‍♀️"><span class="dd">Sep 18</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day run" data-id="rw-sat" data-emoji="🏃‍♀️"><span class="dd">Sep 19</span><span class="dv">2 mi shakeout</span><span class="dp">very easy · just moving</span></div>
         <div class="day raceday non-workout"><span class="dd">Sep 20</span><span class="dv">🏁 Race day!</span><span class="dp">Goal: 9:45–10:05 /mi</span></div>
       </div>
       <p class="week-note">No strength this week — legs only. Your fitness from the build phase is locked in. Trust it.</p>
@@ -394,6 +410,7 @@
   const STORAGE_KEY = 'hm-plan-2026-completed';
   function loadCompleted() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
   function saveCompleted(c) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {} }
+
   function updateProgress(c) {
     const all = document.querySelectorAll('.day[data-id]');
     const total = all.length;
@@ -401,22 +418,144 @@
     document.getElementById('progress-text').textContent = done + ' / ' + total;
     document.getElementById('progress-fill').style.width = (total > 0 ? done/total*100 : 0) + '%';
   }
+
+  // --- Emoji float ---
+  function spawnEmoji(emoji, el) {
+    const rect = el.getBoundingClientRect();
+    const span = document.createElement('span');
+    span.className = 'emoji-float';
+    span.textContent = emoji;
+    span.style.left = (rect.left + rect.width/2 - 11) + 'px';
+    span.style.top = (rect.top + window.scrollY - 10) + 'px';
+    document.body.appendChild(span);
+    span.addEventListener('animationend', () => span.remove());
+  }
+
+  // --- Confetti ---
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let confettiParticles = [];
+  let confettiFrame = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function launchConfetti() {
+    resizeCanvas();
+    const colors = ['#f7c948','#4a3faa','#1a5fa8','#2a8a60','#e04a4a','#f0a030','#a855f7','#ec4899'];
+    confettiParticles = [];
+    for (let i = 0; i < 160; i++) {
+      confettiParticles.push({
+        x: Math.random() * canvas.width,
+        y: -10 - Math.random() * 40,
+        w: 7 + Math.random() * 8,
+        h: 4 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 4,
+        vy: 2.5 + Math.random() * 3.5,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.18,
+        opacity: 1
+      });
+    }
+    if (confettiFrame) cancelAnimationFrame(confettiFrame);
+    animateConfetti();
+  }
+
+  function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confettiParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.angle += p.spin;
+      if (p.y > canvas.height * 0.7) p.opacity -= 0.025;
+      if (p.opacity <= 0) return;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    confettiParticles = confettiParticles.filter(p => p.opacity > 0);
+    if (confettiParticles.length > 0) {
+      confettiFrame = requestAnimationFrame(animateConfetti);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  // --- Toast ---
+  function showToast(msg) {
+    const t = document.getElementById('week-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // --- Week complete check ---
+  function checkWeekComplete(weekCard, completed) {
+    const workouts = weekCard.querySelectorAll('.day[data-id]');
+    if (workouts.length === 0) return false;
+    return Array.from(workouts).every(el => completed[el.dataset.id]);
+  }
+
+  function getWeekName(weekCard) {
+    const label = weekCard.querySelector('.week-label');
+    if (!label) return 'Week';
+    const text = label.textContent.trim().split('\n')[0].trim();
+    return text.replace(/\s+/g, ' ').split(' ').slice(0,2).join(' ');
+  }
+
   let completed = loadCompleted();
-  document.querySelectorAll('.day[data-id]').forEach(el => { if (completed[el.dataset.id]) el.classList.add('done'); });
+  document.querySelectorAll('.day[data-id]').forEach(el => {
+    if (completed[el.dataset.id]) el.classList.add('done');
+  });
+  // Restore week-complete borders on load
+  document.querySelectorAll('.week-card[data-week]').forEach(card => {
+    if (checkWeekComplete(card, completed)) card.classList.add('week-complete');
+  });
   updateProgress(completed);
+
   document.querySelectorAll('.day[data-id]').forEach(el => {
     el.addEventListener('click', () => {
       const id = el.dataset.id;
-      completed[id] = !completed[id];
+      const wasComplete = completed[id];
+      completed[id] = !wasComplete;
       el.classList.toggle('done', completed[id]);
       saveCompleted(completed);
       updateProgress(completed);
+
+      if (completed[id]) {
+        // Emoji float on check
+        const emoji = el.dataset.emoji || '✅';
+        spawnEmoji(emoji, el);
+
+        // Check if whole week is now done
+        const card = el.closest('.week-card[data-week]');
+        if (card && checkWeekComplete(card, completed)) {
+          card.classList.add('week-complete');
+          setTimeout(() => {
+            launchConfetti();
+            showToast(getWeekName(card) + ' complete! 🎉');
+          }, 400);
+        }
+      } else {
+        // Un-checking — remove week-complete if applicable
+        const card = el.closest('.week-card[data-week]');
+        if (card) card.classList.remove('week-complete');
+      }
     });
   });
+
   document.getElementById('reset-btn').addEventListener('click', () => {
     if (!confirm('Reset all checkmarks?')) return;
     completed = {};
     document.querySelectorAll('.day.done').forEach(el => el.classList.remove('done'));
+    document.querySelectorAll('.week-card.week-complete').forEach(c => c.classList.remove('week-complete'));
     saveCompleted(completed);
     updateProgress(completed);
   });
