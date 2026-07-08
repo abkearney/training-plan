@@ -426,7 +426,7 @@
     span.className = 'emoji-float';
     span.textContent = emoji;
     span.style.left = (rect.left + rect.width/2 - 11) + 'px';
-    span.style.top = (rect.top + window.scrollY - 10) + 'px';
+    span.style.top = (rect.top - 10) + 'px';
     document.body.appendChild(span);
     span.addEventListener('animationend', () => span.remove());
   }
