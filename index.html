@@ -10,12 +10,12 @@
   :root {
     --bg: #f7f6f3; --surface: #ffffff; --border: #e4e2db; --border-mid: #d0cec6;
     --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #a09e99;
-    --run-bg: #deeaf8; --run-text: #1a5fa8;
-    --long-bg: #e8e4f8; --long-text: #4a3faa;
-    --strength-bg: #ddf0e2; --strength-text: #2a6b40;
-    --travel-bg: #fdefd8; --travel-text: #8a520a;
-    --flight-bg: #fde4da; --flight-text: #8a3318;
-    --rest-bg: #f0efe9; --rest-text: #9a9890;
+    --run-bg: #d4cef5; --run-text: #3b1fa8;
+    --long-bg: #b5d4f4; --long-text: #0c447c;
+    --strength-bg: #e8c8e8; --strength-text: #6a1a6a;
+    --travel-bg: #fad8a0; --travel-text: #6b3c08;
+    --flight-bg: #f5bfab; --flight-text: #6b2210;
+    --rest-bg: #f0f0f0; --rest-text: #888888;
     --travel-accent: #2a8a60; --taper-accent: #8a6a10; --race-accent: #4a3faa;
     --phase1: #1a5fa8; --phase2: #4a3faa;
     --radius: 8px; --radius-sm: 5px;
@@ -144,8 +144,8 @@
         <div class="pace-item-value">10:00 – 10:15 /mi</div>
         <div class="pace-item-note">Comfortably hard · 155–165 bpm</div>
       </div>
-      <div class="pace-item" style="background:#fde8f0">
-        <div class="pace-item-label" style="color:#8a1a3c">Race Goal</div>
+      <div class="pace-item" style="background:#c0e8d0">
+        <div class="pace-item-label" style="color:#1a6b40">Race Goal</div>
         <div class="pace-item-value">9:45 – 10:05 /mi</div>
         <div class="pace-item-note">Target finish: 2:08 – 2:12</div>
       </div>
@@ -153,12 +153,12 @@
   </div>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#89b8e8"></div>Easy / tempo run</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#a89de8"></div>Long run</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#6ec490"></div>Strength</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f5c878"></div>Travel day</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f0a088"></div>Flight</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#d8d6d0"></div>Rest</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a090e8"></div>Easy / tempo run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6aaae0"></div>Long run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e8c8e8"></div>Strength</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0b84a"></div>Travel day</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e88060"></div>Flight</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8d8d8"></div>Rest</div>
     <div class="legend-item"><div class="legend-dot" style="background:#1a7a40"></div>✓ Completed</div>
   </div>
 
@@ -407,10 +407,16 @@
 </div>
 
 <script>
+  // ─── Storage ────────────────────────────────────────────────────────────────
   const STORAGE_KEY = 'hm-plan-2026-completed';
+  const LAYOUT_KEY  = 'hm-plan-2026-layout';
+
   function loadCompleted() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
   function saveCompleted(c) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {} }
+  function loadLayout() { try { const r = localStorage.getItem(LAYOUT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+  function saveLayout(l) { try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {} }
 
+  // ─── Progress bar ────────────────────────────────────────────────────────────
   function updateProgress(c) {
     const all = document.querySelectorAll('.day[data-id]');
     const total = all.length;
@@ -419,146 +425,369 @@
     document.getElementById('progress-fill').style.width = (total > 0 ? done/total*100 : 0) + '%';
   }
 
-  // --- Emoji float ---
+  // ─── Emoji float ─────────────────────────────────────────────────────────────
   function spawnEmoji(emoji, el) {
     const rect = el.getBoundingClientRect();
     const span = document.createElement('span');
     span.className = 'emoji-float';
     span.textContent = emoji;
     span.style.left = (rect.left + rect.width/2 - 11) + 'px';
-    span.style.top = (rect.top - 10) + 'px';
+    span.style.top  = (rect.top - 10) + 'px';
     document.body.appendChild(span);
     span.addEventListener('animationend', () => span.remove());
   }
 
-  // --- Confetti ---
+  // ─── Confetti ────────────────────────────────────────────────────────────────
   const canvas = document.getElementById('confetti-canvas');
   const ctx = canvas.getContext('2d');
-  let confettiParticles = [];
-  let confettiFrame = null;
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  let confettiParticles = [], confettiFrame = null;
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
   function launchConfetti() {
     resizeCanvas();
     const colors = ['#f7c948','#4a3faa','#1a5fa8','#2a8a60','#e04a4a','#f0a030','#a855f7','#ec4899'];
     confettiParticles = [];
-    for (let i = 0; i < 160; i++) {
-      confettiParticles.push({
-        x: Math.random() * canvas.width,
-        y: -10 - Math.random() * 40,
-        w: 7 + Math.random() * 8,
-        h: 4 + Math.random() * 5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        vx: (Math.random() - 0.5) * 4,
-        vy: 2.5 + Math.random() * 3.5,
-        angle: Math.random() * Math.PI * 2,
-        spin: (Math.random() - 0.5) * 0.18,
-        opacity: 1
-      });
-    }
+    for (let i = 0; i < 160; i++) confettiParticles.push({
+      x: Math.random()*canvas.width, y: -10-Math.random()*40,
+      w: 7+Math.random()*8, h: 4+Math.random()*5,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vx: (Math.random()-0.5)*4, vy: 2.5+Math.random()*3.5,
+      angle: Math.random()*Math.PI*2, spin: (Math.random()-0.5)*0.18, opacity: 1
+    });
     if (confettiFrame) cancelAnimationFrame(confettiFrame);
     animateConfetti();
   }
-
   function animateConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     confettiParticles.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.angle += p.spin;
-      if (p.y > canvas.height * 0.7) p.opacity -= 0.025;
-      if (p.opacity <= 0) return;
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, p.opacity);
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.angle);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      ctx.restore();
+      p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin;
+      if (p.y > canvas.height*0.7) p.opacity-=0.025;
+      if (p.opacity<=0) return;
+      ctx.save(); ctx.globalAlpha=Math.max(0,p.opacity);
+      ctx.translate(p.x,p.y); ctx.rotate(p.angle);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
     });
-    confettiParticles = confettiParticles.filter(p => p.opacity > 0);
-    if (confettiParticles.length > 0) {
-      confettiFrame = requestAnimationFrame(animateConfetti);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    confettiParticles = confettiParticles.filter(p=>p.opacity>0);
+    if (confettiParticles.length>0) confettiFrame=requestAnimationFrame(animateConfetti);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
 
-  // --- Toast ---
+  // ─── Toast ───────────────────────────────────────────────────────────────────
   function showToast(msg) {
     const t = document.getElementById('week-toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2800);
   }
 
-  // --- Week complete check ---
-  function checkWeekComplete(weekCard, completed) {
-    const workouts = weekCard.querySelectorAll('.day[data-id]');
-    if (workouts.length === 0) return false;
-    return Array.from(workouts).every(el => completed[el.dataset.id]);
+  // ─── Week complete ────────────────────────────────────────────────────────────
+  function checkWeekComplete(card, c) {
+    const ws = card.querySelectorAll('.day[data-id]');
+    return ws.length>0 && Array.from(ws).every(el=>c[el.dataset.id]);
   }
-
-  function getWeekName(weekCard) {
-    const label = weekCard.querySelector('.week-label');
+  function getWeekName(card) {
+    const label = card.querySelector('.week-label');
     if (!label) return 'Week';
-    const text = label.textContent.trim().split('\n')[0].trim();
-    return text.replace(/\s+/g, ' ').split(' ').slice(0,2).join(' ');
+    return label.textContent.trim().replace(/\s+/g,' ').split(' ').slice(0,2).join(' ');
+  }
+  function refreshWeekComplete(card, c) {
+    if (checkWeekComplete(card,c)) card.classList.add('week-complete');
+    else card.classList.remove('week-complete');
   }
 
-  let completed = loadCompleted();
-  document.querySelectorAll('.day[data-id]').forEach(el => {
-    if (completed[el.dataset.id]) el.classList.add('done');
-  });
-  // Restore week-complete borders on load
-  document.querySelectorAll('.week-card[data-week]').forEach(card => {
-    if (checkWeekComplete(card, completed)) card.classList.add('week-complete');
-  });
-  updateProgress(completed);
-
-  document.querySelectorAll('.day[data-id]').forEach(el => {
+  // ─── Click handler ───────────────────────────────────────────────────────────
+  function attachClick(el) {
     el.addEventListener('click', () => {
+      if (el._wasDragged) { el._wasDragged = false; return; }
       const id = el.dataset.id;
-      const wasComplete = completed[id];
-      completed[id] = !wasComplete;
+      completed[id] = !completed[id];
       el.classList.toggle('done', completed[id]);
       saveCompleted(completed);
       updateProgress(completed);
-
+      const card = el.closest('.week-card[data-week]');
       if (completed[id]) {
-        // Emoji float on check
-        const emoji = el.dataset.emoji || '✅';
-        spawnEmoji(emoji, el);
-
-        // Check if whole week is now done
-        const card = el.closest('.week-card[data-week]');
+        spawnEmoji(el.dataset.emoji||'✅', el);
         if (card && checkWeekComplete(card, completed)) {
           card.classList.add('week-complete');
-          setTimeout(() => {
-            launchConfetti();
-            showToast(getWeekName(card) + ' complete! 🎉');
-          }, 400);
+          setTimeout(()=>{ launchConfetti(); showToast(getWeekName(card)+' complete! 🎉'); }, 400);
         }
       } else {
-        // Un-checking — remove week-complete if applicable
-        const card = el.closest('.week-card[data-week]');
         if (card) card.classList.remove('week-complete');
       }
     });
-  });
+  }
+
+  // ─── Drag & Drop ─────────────────────────────────────────────────────────────
+  const weekData = {};
+
+  function snapshotWeeks() {
+    document.querySelectorAll('.week-card[data-week]').forEach(card => {
+      const wid = card.dataset.week;
+      const grid = card.querySelector('.day-grid');
+      if (!grid) return;
+      const slots = Array(7).fill(null);
+      let col = 0;
+      Array.from(grid.children).forEach(child => {
+        if (col >= 7) return;
+        if (child.classList.contains('day-split')) {
+          const ws = [];
+          child.querySelectorAll('.day[data-id]').forEach(d => ws.push(extractWorkout(d)));
+          slots[col] = ws;
+        } else if (child.classList.contains('day') && child.dataset.id) {
+          slots[col] = [extractWorkout(child)];
+        } else {
+          slots[col] = null;
+        }
+        col++;
+      });
+      weekData[wid] = slots;
+    });
+  }
+
+  function extractWorkout(el) {
+    return {
+      id:    el.dataset.id,
+      cls:   getWorkoutClass(el),
+      emoji: el.dataset.emoji || '',
+      label: el.querySelector('.dv') ? el.querySelector('.dv').textContent : '',
+      pace:  el.querySelector('.dp') ? el.querySelector('.dp').textContent : '',
+    };
+  }
+
+  function getWorkoutClass(el) {
+    for (const c of ['run','tempo','long','strength','travel-day','flight','raceday']) {
+      if (el.classList.contains(c)) return c;
+    }
+    return 'rest';
+  }
+
+  function applyLayoutOverrides() {
+    const saved = loadLayout();
+    Object.keys(saved).forEach(wid => { if (weekData[wid]) weekData[wid] = saved[wid]; });
+  }
+
+  function renderWeek(wid) {
+    const card = document.querySelector(`.week-card[data-week="${wid}"]`);
+    if (!card) return;
+    const grid = card.querySelector('.day-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const slots = weekData[wid];
+
+    slots.forEach((slot, col) => {
+      if (!slot || slot.length === 0) {
+        const cell = makeRestCell(wid, col);
+        makeDropTarget(cell, wid, col);
+        grid.appendChild(cell);
+      } else if (slot.length === 1) {
+        const cell = makeWorkoutCell(slot[0], wid, col);
+        makeDropTarget(cell, wid, col);
+        grid.appendChild(cell);
+      } else {
+        const split = document.createElement('div');
+        split.className = 'day-split';
+        makeDropTarget(split, wid, col);
+        slot.forEach((w, i) => {
+          const cell = makeWorkoutCell(w, wid, col);
+          if (i===0) cell.classList.add('day-top');
+          split.appendChild(cell);
+        });
+        grid.appendChild(split);
+      }
+    });
+
+    grid.querySelectorAll('.day[data-id]').forEach(el => {
+      if (completed[el.dataset.id]) el.classList.add('done');
+      attachClick(el);
+      makeDraggable(el, wid);
+    });
+
+    refreshWeekComplete(card, completed);
+    updateProgress(completed);
+  }
+
+  function makeRestCell(wid, col) {
+    const cell = document.createElement('div');
+    cell.className = 'day non-workout rest';
+    cell.dataset.col = col; cell.dataset.wid = wid;
+    const dv = document.createElement('span'); dv.className='dv'; dv.textContent='Rest';
+    cell.appendChild(dv);
+    return cell;
+  }
+
+  function makeWorkoutCell(w, wid, col) {
+    const cell = document.createElement('div');
+    cell.className = 'day ' + w.cls;
+    cell.dataset.id = w.id; cell.dataset.emoji = w.emoji;
+    cell.dataset.wid = wid; cell.dataset.col = col;
+    const dv = document.createElement('span'); dv.className='dv'; dv.textContent=w.label;
+    cell.appendChild(dv);
+    if (w.pace) { const dp = document.createElement('span'); dp.className='dp'; dp.textContent=w.pace; cell.appendChild(dp); }
+    return cell;
+  }
+
+  // ─── Drag source ─────────────────────────────────────────────────────────────
+  let dragState = null;
+
+  function makeDraggable(el, wid) {
+    el.setAttribute('draggable','true');
+    el.style.cursor = 'grab';
+
+    el.addEventListener('dragstart', e => {
+      const col = parseInt(el.dataset.col);
+      const slot = weekData[wid][col];
+      const subIdx = slot ? slot.findIndex(w=>w.id===el.dataset.id) : 0;
+      dragState = { wid, col, subIdx, workout: slot ? slot[subIdx] : null };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', el.dataset.id);
+      setTimeout(()=>el.classList.add('dragging'), 0);
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+      el._wasDragged = true;
+      document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
+    });
+
+    // Touch support: tap = check, long-press + drag = move
+    let touchClone = null, longPressTimer = null, touchIsDrag = false;
+    const LONG_PRESS_MS = 300;
+
+    el.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      touchIsDrag = false;
+
+      longPressTimer = setTimeout(() => {
+        // Long press confirmed — enter drag mode
+        touchIsDrag = true;
+        const col = parseInt(el.dataset.col);
+        const slot = weekData[wid][col];
+        const subIdx = slot ? slot.findIndex(w=>w.id===el.dataset.id) : 0;
+        dragState = { wid, col, subIdx, workout: slot ? slot[subIdx] : null };
+        // Haptic feedback if available
+        if (navigator.vibrate) navigator.vibrate(40);
+        el.classList.add('dragging');
+        touchClone = el.cloneNode(true);
+        touchClone.style.cssText = `position:fixed;opacity:0.82;pointer-events:none;z-index:9997;width:${el.offsetWidth}px;transition:none;`;
+        touchClone.style.left = (t.clientX - el.offsetWidth/2)+'px';
+        touchClone.style.top  = (t.clientY - el.offsetHeight/2 - 10)+'px';
+        document.body.appendChild(touchClone);
+      }, LONG_PRESS_MS);
+    }, {passive:true});
+
+    el.addEventListener('touchmove', e => {
+      if (!touchIsDrag) {
+        // Movement before long press fires — cancel long press, treat as scroll
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        return;
+      }
+      e.preventDefault();
+      const t = e.touches[0];
+      if (touchClone) {
+        touchClone.style.left = (t.clientX - el.offsetWidth/2)+'px';
+        touchClone.style.top  = (t.clientY - el.offsetHeight/2 - 10)+'px';
+      }
+      // Find drop target under finger (hide clone temporarily)
+      if (touchClone) touchClone.style.display='none';
+      const under = document.elementFromPoint(t.clientX, t.clientY);
+      if (touchClone) touchClone.style.display='';
+      document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
+      const target = under ? under.closest('[data-drop-target="true"]') : null;
+      if (target && target.dataset.wid === wid) target.classList.add('drop-over');
+    }, {passive:false});
+
+    el.addEventListener('touchend', e => {
+      clearTimeout(longPressTimer);
+      el.classList.remove('dragging');
+      if (touchClone) { touchClone.remove(); touchClone=null; }
+      document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
+
+      if (touchIsDrag) {
+        // Complete the drag
+        const t = e.changedTouches[0];
+        if (touchClone) touchClone.style.display='none';
+        const under = document.elementFromPoint(t.clientX, t.clientY);
+        const target = under ? under.closest('[data-drop-target="true"]') : null;
+        if (target && target.dataset.wid === wid) handleDrop(target);
+        el._wasDragged = true;
+        dragState = null;
+        touchIsDrag = false;
+      }
+      // If not a drag, touchend falls through to the click handler naturally
+    });
+
+    el.addEventListener('touchcancel', () => {
+      clearTimeout(longPressTimer);
+      touchIsDrag = false;
+      dragState = null;
+      el.classList.remove('dragging');
+      if (touchClone) { touchClone.remove(); touchClone=null; }
+      document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
+    });
+  }
+
+  // ─── Drop target ─────────────────────────────────────────────────────────────
+  function makeDropTarget(el, wid, col) {
+    el.dataset.dropTarget = 'true';
+    el.dataset.wid = wid;
+    el.dataset.col = col;
+
+    el.addEventListener('dragover', e => {
+      if (!dragState || dragState.wid !== wid) return;
+      e.preventDefault(); e.dataTransfer.dropEffect='move';
+      el.classList.add('drop-over');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drop-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault(); el.classList.remove('drop-over');
+      if (!dragState || dragState.wid !== wid) return;
+      handleDrop(el);
+    });
+  }
+
+  function handleDrop(target) {
+    if (!dragState) return;
+    const { wid, col: srcCol, subIdx, workout } = dragState;
+    const destCol = parseInt(target.dataset.col);
+    if (isNaN(destCol) || destCol === srcCol) return;
+    const slots = weekData[wid];
+
+    // Remove from source
+    const srcSlot = slots[srcCol];
+    if (!srcSlot) return;
+    srcSlot.splice(subIdx, 1);
+    slots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
+
+    // Add to destination
+    slots[destCol] = slots[destCol] ? [...slots[destCol], workout] : [workout];
+
+    const saved = loadLayout();
+    saved[wid] = slots;
+    saveLayout(saved);
+    renderWeek(wid);
+  }
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  let completed = loadCompleted();
+  snapshotWeeks();
+  applyLayoutOverrides();
+  document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
+  updateProgress(completed);
 
   document.getElementById('reset-btn').addEventListener('click', () => {
-    if (!confirm('Reset all checkmarks?')) return;
+    if (!confirm('Reset all checkmarks and layout changes?')) return;
     completed = {};
-    document.querySelectorAll('.day.done').forEach(el => el.classList.remove('done'));
-    document.querySelectorAll('.week-card.week-complete').forEach(c => c.classList.remove('week-complete'));
     saveCompleted(completed);
-    updateProgress(completed);
+    localStorage.removeItem(LAYOUT_KEY);
+    location.reload();
   });
 </script>
+
+<style>
+  .day[draggable="true"] { cursor: grab; }
+  .day.dragging { opacity: 0.35; transform: scale(0.96); }
+  [data-drop-target="true"].drop-over { outline: 2px dashed #4a3faa !important; outline-offset: 1px; background-color: #f0eefe !important; border-radius: var(--radius-sm); }
+</style>
 </body>
 </html>
