@@ -9,7 +9,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #f7f6f3; --surface: #ffffff; --border: #e4e2db; --border-mid: #d0cec6;
-    --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #a09e99;
+    --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #363636;
     --run-bg: #d4cef5; --run-text: #3b1fa8;
     --long-bg: #b5d4f4; --long-text: #0c447c;
     --strength-bg: #e8c8e8; --strength-text: #6a1a6a;
@@ -62,14 +62,14 @@
   .b-purple { background: #e8e4f8; color: #4a3faa; }
   .b-gray { background: #eeecea; color: #6b6860; }
   .day-header-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; margin-bottom: 3px; }
-  .dh { font-size: 10px; text-align: center; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; }
+  .dh { font-size: 10px; text-align: center; color: #363636; font-weight: 600; letter-spacing: 0.04em; }
   .day-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
   .day { position: relative; font-size: 10px; text-align: center; padding: 6px 2px 4px; border-radius: var(--radius-sm); background: var(--rest-bg); cursor: pointer; user-select: none; transition: transform 0.1s ease, box-shadow 0.1s ease; overflow: visible; }
   .day:not(.empty):not(.non-workout):hover { transform: scale(1.04); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
   .day:not(.empty):not(.non-workout):active { transform: scale(0.97); }
   .day.empty { background: transparent; cursor: default; }
   .day.non-workout { cursor: default; }
-  .day .dd { color: var(--text-muted); display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
+  .day .dd { color: #363636; display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
   .day .dv { font-weight: 600; color: var(--rest-text); display: block; font-size: 10px; line-height: 1.3; }
   .day .dp { display: block; font-size: 8px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
   .day.run { background: var(--run-bg); } .day.run .dv { color: var(--run-text); } .day.run .dp { color: var(--run-text); }
