@@ -541,19 +541,25 @@
   // ─── Drag & Drop ─────────────────────────────────────────────────────────────
   const weekData = {};
 
+  // Track which cols are true empty spacers (not droppable) per week
+  const weekEmptySlots = {};
+
   function snapshotWeeks() {
     document.querySelectorAll('.week-card[data-week]').forEach(card => {
       const wid = card.dataset.week;
       const grid = card.querySelector('.day-grid');
       if (!grid) return;
       const slots = Array(7).fill(null);
+      const emptyCols = new Set();
       let autoCol = 0;
       Array.from(grid.children).forEach(child => {
-        // Use explicit data-col if present, otherwise auto-increment skipping empties
         const col = child.dataset.col !== undefined ? parseInt(child.dataset.col) : autoCol;
         if (!child.classList.contains('empty')) autoCol = col + 1;
         if (col >= 7) return;
-        if (child.classList.contains('empty')) return; // skip spacers
+        if (child.classList.contains('empty')) {
+          emptyCols.add(col); // record as spacer, skip
+          return;
+        }
         if (child.classList.contains('day-split')) {
           const ws = [];
           child.querySelectorAll('.day[data-id]').forEach(d => ws.push(extractWorkout(d)));
@@ -565,6 +571,7 @@
         }
       });
       weekData[wid] = slots;
+      weekEmptySlots[wid] = emptyCols;
     });
   }
 
@@ -598,7 +605,15 @@
     grid.innerHTML = '';
     const slots = weekData[wid];
 
+    const emptyCols = weekEmptySlots[wid] || new Set();
     slots.forEach((slot, col) => {
+      if (emptyCols.has(col)) {
+        // True empty spacer — invisible, not droppable
+        const cell = document.createElement('div');
+        cell.className = 'day empty';
+        grid.appendChild(cell);
+        return;
+      }
       if (!slot || slot.length === 0) {
         const cell = makeRestCell(wid, col);
         makeDropTarget(cell, wid, col);
