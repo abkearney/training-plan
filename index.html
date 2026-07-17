@@ -15,7 +15,7 @@
     --strength-bg: #e8c8e8; --strength-text: #6a1a6a;
     --travel-bg: #fad8a0; --travel-text: #6b3c08;
     --flight-bg: #f5bfab; --flight-text: #6b2210;
-    --rest-bg: #f0f0f0; --rest-text: #888888;
+    --rest-bg: #f0f0f0; --rest-text: #363636;
     --travel-accent: #2a8a60; --taper-accent: #8a6a10; --race-accent: #4a3faa;
     --phase1: #1a5fa8; --phase2: #4a3faa;
     --radius: 8px; --radius-sm: 5px;
@@ -85,7 +85,7 @@
   .day-split .day { flex: 1; }
   .day-split .day .dd { display: none; }
   .day-split .day-top .dd { display: block; }
-  .week-note { font-size: 11px; color: var(--text-secondary); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--border); font-style: italic; }
+  .week-note { font-size: 11px; color: #363636; margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--border); font-style: italic; }
   .section-div { height: 1px; background: var(--border-mid); margin: 2rem 0; }
   .reset-btn { display: block; margin: 2rem auto 0; padding: 8px 20px; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-secondary); background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
   .reset-btn:hover { background: var(--rest-bg); color: var(--text-primary); }
@@ -173,11 +173,11 @@
       <div class="week-top"><span class="week-label">Week 1 <span class="badge b-gray">Recovery / base</span></span><span class="week-dates">Jun 25 – Jun 29</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
-        <div class="day non-workout rest"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div>
+        <div class="day non-workout rest" data-col="3"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
+        <div class="day run" data-col="4" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day non-workout rest" data-col="5"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
+        <div class="day run" data-col="6" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
       </div>
       <p class="week-note">Felt strong on Jun 20 — short easy runs only before jumping into long runs next week.</p>
     </div>
@@ -307,7 +307,7 @@
         <div class="day tempo" data-id="w9-wed" data-emoji="⚡"><span class="dd">Aug 19</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
         <div class="day strength" data-id="w9-thu" data-emoji="💪"><span class="dd">Aug 20</span><span class="dv">Strength (light)</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 21</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 22</span><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w9-sat" data-emoji="🎽"><span class="dd">Aug 22</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 23</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Normal rhythm Mon–Thu, then rest Fri–Sun. Aug 24–25 are additional rest before the Thu Aug 27 flight.</p>
@@ -355,11 +355,11 @@
       <div class="week-top"><span class="week-label">Travel week 3 <span class="badge b-teal">Wind-down</span></span><span class="week-dates">Sep 7 – Sep 10</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
-        <div class="day flight non-workout"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
-        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
+        <div class="day run" data-col="0" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day non-workout rest" data-col="1"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="2"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
+        <div class="day flight non-workout" data-col="3"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
+        <div class="day empty" data-col="4"></div><div class="day empty" data-col="5"></div><div class="day empty" data-col="6"></div>
       </div>
       <p class="week-note">Easy cardio Monday — walk, swim, treadmill, whatever's available. Then rest before the long flight home Thursday. Heat &amp; humidity in SE Asia will push HR higher — slow down to compensate.</p>
     </div>
@@ -378,10 +378,10 @@
       <div class="week-top"><span class="week-label">Return &amp; reactivate</span><span class="week-dates">Sep 11 – Sep 13</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
-        <div class="day non-workout rest"><span class="dd">Sep 11</span><span class="dv">Rest / arrive</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 12</span><span class="dv">Rest / jet lag</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 13</span><span class="dv">Rest</span></div>
+        <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div><div class="day empty" data-col="3"></div>
+        <div class="day non-workout rest" data-col="4"><span class="dd">Sep 11</span><span class="dv">Rest / arrive</span></div>
+        <div class="day non-workout rest" data-col="5"><span class="dd">Sep 12</span><span class="dv">Rest / jet lag</span></div>
+        <div class="day non-workout rest" data-col="6"><span class="dd">Sep 13</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Three full rest days after the long-haul return flight before race week begins Monday.</p>
     </div>
@@ -547,19 +547,22 @@
       const grid = card.querySelector('.day-grid');
       if (!grid) return;
       const slots = Array(7).fill(null);
-      let col = 0;
+      let autoCol = 0;
       Array.from(grid.children).forEach(child => {
+        // Use explicit data-col if present, otherwise auto-increment skipping empties
+        const col = child.dataset.col !== undefined ? parseInt(child.dataset.col) : autoCol;
+        if (!child.classList.contains('empty')) autoCol = col + 1;
         if (col >= 7) return;
+        if (child.classList.contains('empty')) return; // skip spacers
         if (child.classList.contains('day-split')) {
           const ws = [];
           child.querySelectorAll('.day[data-id]').forEach(d => ws.push(extractWorkout(d)));
-          slots[col] = ws;
+          slots[col] = ws.length ? ws : null;
         } else if (child.classList.contains('day') && child.dataset.id) {
           slots[col] = [extractWorkout(child)];
         } else {
-          slots[col] = null;
+          slots[col] = null; // rest or non-workout
         }
-        col++;
       });
       weekData[wid] = slots;
     });
