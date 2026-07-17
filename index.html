@@ -433,7 +433,7 @@
   function loadLayout() { try { const r = localStorage.getItem(LAYOUT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
   function saveLayout(l) {
     try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {}
-    set(ref(_db, 'state/layout'), l).catch(e => console.error('FB save error:', e));
+    // Layout stays local only — not synced to Firebase
   }
 
   // ─── Progress bar ────────────────────────────────────────────────────────────
@@ -839,7 +839,6 @@
     saveCompleted({});
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LAYOUT_KEY);
-    set(ref(_db, 'state/layout'), null).catch(()=>{});
     location.reload();
   });
 
@@ -861,60 +860,6 @@
     _syncingFromRemote = false;
   });
 
-  // All workout IDs that should exist across all weeks
-  const ALL_WORKOUT_IDS = new Set();
-  document.querySelectorAll('.week-card[data-week] .day[data-id]').forEach(el => ALL_WORKOUT_IDS.add(el.dataset.id));
-
-  function isLayoutStale(layout) {
-    for (const wid of Object.keys(layout)) {
-      const savedIds = (layout[wid] || []).flat().filter(Boolean).map(w => w && w.id).filter(Boolean);
-      for (const id of ALL_WORKOUT_IDS) {
-        // If this id belongs to this week and is missing from the saved layout, it's stale
-        if (id.startsWith(wid.replace('w','')) || id.startsWith(wid)) {
-          // just check all saved ids across all weeks cover all known ids
-        }
-      }
-    }
-    // Simpler check: any saved workout id that doesn't exist in the DOM means stale
-    for (const wid of Object.keys(layout)) {
-      const slots = layout[wid] || [];
-      for (const slot of slots) {
-        if (!slot) continue;
-        for (const w of slot) {
-          if (w && w.id && !ALL_WORKOUT_IDS.has(w.id)) return true;
-        }
-      }
-      // Check reverse: any week in weekData has workouts not in saved layout
-      if (weekData[wid]) {
-        const savedIds = slots.flat().filter(Boolean).map(w => w && w.id).filter(Boolean);
-        for (const slot of weekData[wid]) {
-          if (!slot) continue;
-          for (const w of slot) {
-            if (w && w.id && !savedIds.includes(w.id)) return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  onValue(ref(_db, 'state/layout'), snapshot => {
-    const remote = snapshot.val();
-    if (!remote) return;
-    // If stale (missing workouts), overwrite Firebase with the correct current layout
-    if (isLayoutStale(remote)) {
-      console.log('Stale Firebase layout detected — overwriting with current layout');
-      const cleanLayout = {};
-      Object.keys(weekData).forEach(wid => { cleanLayout[wid] = weekData[wid]; });
-      set(ref(_db, 'state/layout'), cleanLayout).catch(()=>{});
-      try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(cleanLayout)); } catch(e) {}
-      return;
-    }
-    if (JSON.stringify(remote) === JSON.stringify(loadLayout())) return;
-    try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(remote)); } catch(e) {}
-    Object.keys(remote).forEach(wid => { if (weekData[wid]) weekData[wid] = remote[wid]; });
-    Object.keys(remote).forEach(wid => renderWeek(wid));
-  });
 </script>
 
 <style>
