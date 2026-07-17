@@ -525,8 +525,11 @@
 
   // ─── Click handler ───────────────────────────────────────────────────────────
   function attachClick(el) {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      // Prevent double-firing on iOS where touchend already handled the tap
+      if (e.sourceCapabilities && !e.sourceCapabilities.firesTouchEvents === false) return;
       if (el._wasDragged) { el._wasDragged = false; return; }
+      if (el._touchHandled) { el._touchHandled = false; return; }
       const id = el.dataset.id;
       completed[id] = !completed[id];
       el.classList.toggle('done', completed[id]);
@@ -718,6 +721,7 @@
       if (touchClone) { touchClone.remove(); touchClone=null; }
       document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
       if (touchIsDrag) {
+        // Completed a drag — drop it
         const t = e.changedTouches[0];
         const under = document.elementFromPoint(t.clientX, t.clientY);
         const target = under ? under.closest('[data-drop-target="true"]') : null;
@@ -725,6 +729,25 @@
         el._wasDragged = true;
         dragState = null;
         touchIsDrag = false;
+      } else {
+        // Short tap — manually fire check logic (Safari doesn't always synthesize click)
+        el._touchHandled = true;
+        e.preventDefault();
+        const id = el.dataset.id;
+        completed[id] = !completed[id];
+        el.classList.toggle('done', completed[id]);
+        saveCompleted(completed);
+        updateProgress(completed);
+        const card = el.closest('.week-card[data-week]');
+        if (completed[id]) {
+          spawnEmoji(el.dataset.emoji||'✅', el);
+          if (card && checkWeekComplete(card, completed)) {
+            card.classList.add('week-complete');
+            setTimeout(()=>{ launchConfetti(); showToast(getWeekName(card)+' complete! 🎉'); }, 400);
+          }
+        } else {
+          if (card) card.classList.remove('week-complete');
+        }
       }
     });
 
@@ -827,6 +850,7 @@
 
 <style>
   .day[draggable="true"] { cursor: grab; }
+  .day:not(.empty):not(.non-workout) { cursor: pointer; -webkit-tap-highlight-color: rgba(0,0,0,0.1); }
   .day.dragging { opacity: 0.35; transform: scale(0.96); }
   [data-drop-target="true"].drop-over { outline: 2px dashed #4a3faa !important; outline-offset: 1px; background-color: #f0eefe !important; border-radius: var(--radius-sm); }
 </style>
