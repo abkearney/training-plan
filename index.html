@@ -9,13 +9,13 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #f7f6f3; --surface: #ffffff; --border: #e4e2db; --border-mid: #d0cec6;
-    --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #363636;
+    --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #a09e99;
     --run-bg: #d4cef5; --run-text: #3b1fa8;
     --long-bg: #b5d4f4; --long-text: #0c447c;
     --strength-bg: #e8c8e8; --strength-text: #6a1a6a;
     --travel-bg: #fad8a0; --travel-text: #6b3c08;
     --flight-bg: #f5bfab; --flight-text: #6b2210;
-    --rest-bg: #f0f0f0; --rest-text: #363636;
+    --rest-bg: #f0f0f0; --rest-text: #888888;
     --travel-accent: #2a8a60; --taper-accent: #8a6a10; --race-accent: #4a3faa;
     --phase1: #1a5fa8; --phase2: #4a3faa;
     --radius: 8px; --radius-sm: 5px;
@@ -62,14 +62,14 @@
   .b-purple { background: #e8e4f8; color: #4a3faa; }
   .b-gray { background: #eeecea; color: #6b6860; }
   .day-header-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; margin-bottom: 3px; }
-  .dh { font-size: 10px; text-align: center; color: #363636; font-weight: 600; letter-spacing: 0.04em; }
+  .dh { font-size: 10px; text-align: center; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; }
   .day-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
   .day { position: relative; font-size: 10px; text-align: center; padding: 6px 2px 4px; border-radius: var(--radius-sm); background: var(--rest-bg); cursor: pointer; user-select: none; transition: transform 0.1s ease, box-shadow 0.1s ease; overflow: visible; }
   .day:not(.empty):not(.non-workout):hover { transform: scale(1.04); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
   .day:not(.empty):not(.non-workout):active { transform: scale(0.97); }
   .day.empty { background: transparent; cursor: default; }
   .day.non-workout { cursor: default; }
-  .day .dd { color: #363636; display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
+  .day .dd { color: var(--text-muted); display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
   .day .dv { font-weight: 600; color: var(--rest-text); display: block; font-size: 10px; line-height: 1.3; }
   .day .dp { display: block; font-size: 8px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
   .day.run { background: var(--run-bg); } .day.run .dv { color: var(--run-text); } .day.run .dp { color: var(--run-text); }
@@ -85,7 +85,7 @@
   .day-split .day { flex: 1; }
   .day-split .day .dd { display: none; }
   .day-split .day-top .dd { display: block; }
-  .week-note { font-size: 11px; color: #363636; margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--border); font-style: italic; }
+  .week-note { font-size: 11px; color: var(--text-secondary); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--border); font-style: italic; }
   .section-div { height: 1px; background: var(--border-mid); margin: 2rem 0; }
   .reset-btn { display: block; margin: 2rem auto 0; padding: 8px 20px; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-secondary); background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
   .reset-btn:hover { background: var(--rest-bg); color: var(--text-primary); }
@@ -173,11 +173,11 @@
       <div class="week-top"><span class="week-label">Week 1 <span class="badge b-gray">Recovery / base</span></span><span class="week-dates">Jun 25 – Jun 29</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div>
-        <div class="day non-workout rest" data-col="3"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
-        <div class="day run" data-col="4" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day non-workout rest" data-col="5"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
-        <div class="day run" data-col="6" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
+        <div class="day non-workout rest"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day non-workout rest"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
       </div>
       <p class="week-note">Felt strong on Jun 20 — short easy runs only before jumping into long runs next week.</p>
     </div>
@@ -307,7 +307,7 @@
         <div class="day tempo" data-id="w9-wed" data-emoji="⚡"><span class="dd">Aug 19</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
         <div class="day strength" data-id="w9-thu" data-emoji="💪"><span class="dd">Aug 20</span><span class="dv">Strength (light)</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 21</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w9-sat" data-emoji="🎽"><span class="dd">Aug 22</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dd">Aug 22</span><span class="dv">Rest</span></div>
         <div class="day non-workout rest"><span class="dd">Aug 23</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Normal rhythm Mon–Thu, then rest Fri–Sun. Aug 24–25 are additional rest before the Thu Aug 27 flight.</p>
@@ -355,11 +355,11 @@
       <div class="week-top"><span class="week-label">Travel week 3 <span class="badge b-teal">Wind-down</span></span><span class="week-dates">Sep 7 – Sep 10</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-col="0" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day non-workout rest" data-col="1"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest" data-col="2"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
-        <div class="day flight non-workout" data-col="3"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
-        <div class="day empty" data-col="4"></div><div class="day empty" data-col="5"></div><div class="day empty" data-col="6"></div>
+        <div class="day run" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
+        <div class="day non-workout rest"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
+        <div class="day flight non-workout"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
+        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
       </div>
       <p class="week-note">Easy cardio Monday — walk, swim, treadmill, whatever's available. Then rest before the long flight home Thursday. Heat &amp; humidity in SE Asia will push HR higher — slow down to compensate.</p>
     </div>
@@ -378,10 +378,10 @@
       <div class="week-top"><span class="week-label">Return &amp; reactivate</span><span class="week-dates">Sep 11 – Sep 13</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div><div class="day empty" data-col="3"></div>
-        <div class="day non-workout rest" data-col="4"><span class="dd">Sep 11</span><span class="dv">Rest / arrive</span></div>
-        <div class="day non-workout rest" data-col="5"><span class="dd">Sep 12</span><span class="dv">Rest / jet lag</span></div>
-        <div class="day non-workout rest" data-col="6"><span class="dd">Sep 13</span><span class="dv">Rest</span></div>
+        <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
+        <div class="day non-workout rest"><span class="dd">Sep 11</span><span class="dv">Rest / arrive</span></div>
+        <div class="day non-workout rest"><span class="dd">Sep 12</span><span class="dv">Rest / jet lag</span></div>
+        <div class="day non-workout rest"><span class="dd">Sep 13</span><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Three full rest days after the long-haul return flight before race week begins Monday.</p>
     </div>
@@ -406,35 +406,15 @@
 
 </div>
 
-<script type="module">
-  // ─── Firebase ────────────────────────────────────────────────────────────────
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  const _app = initializeApp({
-    apiKey: "AIzaSyDQQVcn2K7E-kQAcs0hqF9OxP2nYi1kdo8",
-    authDomain: "orca-half-plan.firebaseapp.com",
-    databaseURL: "https://orca-half-plan-default-rtdb.firebaseio.com",
-    projectId: "orca-half-plan",
-    storageBucket: "orca-half-plan.firebasestorage.app",
-    messagingSenderId: "543421547579",
-    appId: "1:543421547579:web:0d13827d6a9e0595f4881e"
-  });
-  const _db = getDatabase(_app);
-
+<script>
   // ─── Storage ────────────────────────────────────────────────────────────────
   const STORAGE_KEY = 'hm-plan-2026-completed';
   const LAYOUT_KEY  = 'hm-plan-2026-layout';
 
   function loadCompleted() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
-  function saveCompleted(c) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {}
-    set(ref(_db, 'state/completed'), c).catch(e => console.error('FB save error:', e));
-  }
+  function saveCompleted(c) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {} }
   function loadLayout() { try { const r = localStorage.getItem(LAYOUT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
-  function saveLayout(l) {
-    try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {}
-    // Layout stays local only — not synced to Firebase
-  }
+  function saveLayout(l) { try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {} }
 
   // ─── Progress bar ────────────────────────────────────────────────────────────
   function updateProgress(c) {
@@ -519,7 +499,6 @@
   function attachClick(el) {
     el.addEventListener('click', () => {
       if (el._wasDragged) { el._wasDragged = false; return; }
-      if (el._tapHandled) return; // already handled by touchend on iOS
       const id = el.dataset.id;
       completed[id] = !completed[id];
       el.classList.toggle('done', completed[id]);
@@ -541,37 +520,27 @@
   // ─── Drag & Drop ─────────────────────────────────────────────────────────────
   const weekData = {};
 
-  // Track which cols are true empty spacers (not droppable) per week
-  const weekEmptySlots = {};
-
   function snapshotWeeks() {
     document.querySelectorAll('.week-card[data-week]').forEach(card => {
       const wid = card.dataset.week;
       const grid = card.querySelector('.day-grid');
       if (!grid) return;
       const slots = Array(7).fill(null);
-      const emptyCols = new Set();
-      let autoCol = 0;
+      let col = 0;
       Array.from(grid.children).forEach(child => {
-        const col = child.dataset.col !== undefined ? parseInt(child.dataset.col) : autoCol;
-        if (!child.classList.contains('empty')) autoCol = col + 1;
         if (col >= 7) return;
-        if (child.classList.contains('empty')) {
-          emptyCols.add(col); // record as spacer, skip
-          return;
-        }
         if (child.classList.contains('day-split')) {
           const ws = [];
           child.querySelectorAll('.day[data-id]').forEach(d => ws.push(extractWorkout(d)));
-          slots[col] = ws.length ? ws : null;
+          slots[col] = ws;
         } else if (child.classList.contains('day') && child.dataset.id) {
           slots[col] = [extractWorkout(child)];
         } else {
-          slots[col] = null; // rest or non-workout
+          slots[col] = null;
         }
+        col++;
       });
       weekData[wid] = slots;
-      weekEmptySlots[wid] = emptyCols;
     });
   }
 
@@ -605,15 +574,7 @@
     grid.innerHTML = '';
     const slots = weekData[wid];
 
-    const emptyCols = weekEmptySlots[wid] || new Set();
     slots.forEach((slot, col) => {
-      if (emptyCols.has(col)) {
-        // True empty spacer — invisible, not droppable
-        const cell = document.createElement('div');
-        cell.className = 'day empty';
-        grid.appendChild(cell);
-        return;
-      }
       if (!slot || slot.length === 0) {
         const cell = makeRestCell(wid, col);
         makeDropTarget(cell, wid, col);
@@ -745,34 +706,15 @@
       if (touchIsDrag) {
         // Complete the drag
         const t = e.changedTouches[0];
+        if (touchClone) touchClone.style.display='none';
         const under = document.elementFromPoint(t.clientX, t.clientY);
         const target = under ? under.closest('[data-drop-target="true"]') : null;
         if (target && target.dataset.wid === wid) handleDrop(target);
         el._wasDragged = true;
         dragState = null;
         touchIsDrag = false;
-      } else {
-        // Short tap — fire check logic directly (Safari doesn't reliably synthesize click on divs)
-        e.preventDefault();
-        if (el._tapHandled) { el._tapHandled = false; return; }
-        el._tapHandled = true;
-        const id = el.dataset.id;
-        completed[id] = !completed[id];
-        el.classList.toggle('done', completed[id]);
-        saveCompleted(completed);
-        updateProgress(completed);
-        const card = el.closest('.week-card[data-week]');
-        if (completed[id]) {
-          spawnEmoji(el.dataset.emoji||'✅', el);
-          if (card && checkWeekComplete(card, completed)) {
-            card.classList.add('week-complete');
-            setTimeout(()=>{ launchConfetti(); showToast(getWeekName(card)+' complete! 🎉'); }, 400);
-          }
-        } else {
-          if (card) card.classList.remove('week-complete');
-        }
-        setTimeout(() => { el._tapHandled = false; }, 300);
       }
+      // If not a drag, touchend falls through to the click handler naturally
     });
 
     el.addEventListener('touchcancel', () => {
@@ -836,36 +778,14 @@
   document.getElementById('reset-btn').addEventListener('click', () => {
     if (!confirm('Reset all checkmarks and layout changes?')) return;
     completed = {};
-    saveCompleted({});
-    localStorage.removeItem(STORAGE_KEY);
+    saveCompleted(completed);
     localStorage.removeItem(LAYOUT_KEY);
     location.reload();
   });
-
-  // ─── Firebase real-time listeners ────────────────────────────────────────────
-  let _syncingFromRemote = false;
-
-  onValue(ref(_db, 'state/completed'), snapshot => {
-    const remote = snapshot.val();
-    if (!remote) return;
-    if (JSON.stringify(remote) === JSON.stringify(completed)) return;
-    _syncingFromRemote = true;
-    completed = remote;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch(e) {}
-    document.querySelectorAll('.day[data-id]').forEach(el => {
-      el.classList.toggle('done', !!completed[el.dataset.id]);
-    });
-    document.querySelectorAll('.week-card[data-week]').forEach(card => refreshWeekComplete(card, completed));
-    updateProgress(completed);
-    _syncingFromRemote = false;
-  });
-
 </script>
 
 <style>
-  .day { min-height: 58px; display: flex; flex-direction: column; justify-content: center; }
   .day[draggable="true"] { cursor: grab; }
-  .day:not(.empty):not(.non-workout) { cursor: pointer; -webkit-tap-highlight-color: rgba(0,0,0,0.08); }
   .day.dragging { opacity: 0.35; transform: scale(0.96); }
   [data-drop-target="true"].drop-over { outline: 2px dashed #4a3faa !important; outline-offset: 1px; background-color: #f0eefe !important; border-radius: var(--radius-sm); }
 </style>
