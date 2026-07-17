@@ -549,52 +549,128 @@
   }
 
   // ─── Drag & Drop ─────────────────────────────────────────────────────────────
-  const weekData = {};
+  // Each slot is null (rest/empty) or array of workout objects {id,cls,emoji,label,pace}
+  // Hardcoded so we never need to parse the DOM structure
 
-  function snapshotWeeks() {
-    document.querySelectorAll('.week-card[data-week]').forEach(card => {
-      const wid = card.dataset.week;
-      const grid = card.querySelector('.day-grid');
-      if (!grid) return;
-      const slots = Array(7).fill(null);
-      let col = 0;
-      Array.from(grid.children).forEach(child => {
-        if (col >= 7) return;
-        if (child.classList.contains('day-split')) {
-          const ws = [];
-          child.querySelectorAll('.day[data-id]').forEach(d => ws.push(extractWorkout(d)));
-          slots[col] = ws;
-        } else if (child.classList.contains('day') && child.dataset.id) {
-          slots[col] = [extractWorkout(child)];
-        } else {
-          slots[col] = null;
-        }
-        col++;
-      });
-      weekData[wid] = slots;
+  const W = (id, cls, emoji, label, pace='') => ({id, cls, emoji, label, pace});
+  const WEEK_DEFAULTS = {
+    w1:   [ null, null, null,
+            null,
+            [W('w1-fri','run','🏃‍♀️','3 mi easy','11:30–12:15 /mi')],
+            null,
+            [W('w1-sun','run','🏃‍♀️','3 mi easy','11:30–12:15 /mi')] ],
+    w2:   [ [W('w2-mon','strength','💪','Strength')],
+            [W('w2-tue','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            null,
+            [W('w2-thu-run','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi'), W('w2-thu-str','strength','💪','Strength')],
+            null,
+            [W('w2-sat','long','🎽','6 mi long','11:45–12:30 /mi')],
+            null ],
+    w3:   [ null,
+            [W('w3-tue','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            [W('w3-wed','strength','💪','Strength')],
+            [W('w3-thu','tempo','⚡','5 mi tempo','1mi wu · 3mi @ 10:00–10:15 · 1mi cd')],
+            [W('w3-fri','strength','💪','Strength')],
+            [W('w3-sat','long','🎽','8 mi long','11:45–12:30 /mi')],
+            null ],
+    w4:   [ [W('w4-mon','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            [W('w4-tue','strength','💪','Strength')],
+            [W('w4-wed','tempo','⚡','4 mi tempo','0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd')],
+            [W('w4-thu','strength','💪','Strength')],
+            null,
+            [W('w4-sat','long','🎽','7 mi long','11:45–12:30 /mi')],
+            null ],
+    w5:   [ [W('w5-mon','run','🏃‍♀️','5 mi easy','11:30–12:15 /mi')],
+            [W('w5-tue','strength','💪','Strength')],
+            [W('w5-wed','tempo','⚡','6 mi tempo','1mi wu · 4mi @ 10:00–10:15 · 1mi cd')],
+            [W('w5-thu','strength','💪','Strength')],
+            null,
+            [W('w5-sat','long','🎽','10 mi long','11:45–12:30 /mi')],
+            null ],
+    w6:   [ [W('w6-mon','run','🏃‍♀️','5 mi easy','11:30–12:15 /mi')],
+            [W('w6-tue','strength','💪','Strength')],
+            [W('w6-wed','tempo','⚡','6 mi tempo','1mi wu · 4mi @ 10:00–10:15 · 1mi cd')],
+            [W('w6-thu','strength','💪','Strength')],
+            null,
+            [W('w6-sat','long','🎽','11 mi long','11:45–12:30 /mi')],
+            null ],
+    w7:   [ [W('w7-mon','run','🏃‍♀️','5 mi easy','11:30–12:15 /mi')],
+            [W('w7-tue','strength','💪','Strength')],
+            [W('w7-wed','tempo','⚡','7 mi tempo','1mi wu · 5mi @ 10:00–10:15 · 1mi cd')],
+            [W('w7-thu','strength','💪','Strength')],
+            null,
+            [W('w7-sat','long','🎽','13 mi long','11:45–12:30 /mi')],
+            null ],
+    w8:   [ [W('w8-mon','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            [W('w8-tue','strength','💪','Strength')],
+            [W('w8-wed','tempo','⚡','5 mi tempo','1mi wu · 3mi @ 10:00–10:15 · 1mi cd')],
+            [W('w8-thu','strength','💪','Strength')],
+            null,
+            [W('w8-sat','long','🎽','7 mi long','11:45–12:30 /mi')],
+            null ],
+    w9:   [ [W('w9-mon','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            [W('w9-tue','strength','💪','Strength')],
+            [W('w9-wed','tempo','⚡','4 mi tempo','0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd')],
+            [W('w9-thu','strength','💪','Strength (light)')],
+            null, null, null ],
+    tw1:  [ null, null, null,
+            null,
+            null,
+            [W('tw1-sat','run','🌟','Cardio 40 min','easy effort · ≤145 bpm')],
+            [W('tw1-sun','strength','💪','Bodyweight')] ],
+    tw2:  [ null,
+            [W('tw2-tue','run','🌟','Cardio 40 min','easy effort · ≤145 bpm')],
+            [W('tw2-wed','strength','💪','Bodyweight')],
+            null,
+            [W('tw2-fri','run','🌟','Cardio 40 min','easy effort · ≤145 bpm')],
+            [W('tw2-sat','strength','💪','Bodyweight')],
+            null ],
+    tw3:  [ [W('tw3-mon','run','🌟','Cardio 30 min','easy effort · ≤145 bpm')],
+            null, null, null, null, null, null ],
+    ret1: [ null, null, null, null, null, null, null ],
+    rw:   [ [W('rw-mon','run','🏃‍♀️','4 mi easy','11:30–12:15 /mi')],
+            null,
+            [W('rw-wed','tempo','⚡','3 mi strides','1mi wu · 1mi strides · 1mi cd')],
+            null,
+            [W('rw-fri','run','🏃‍♀️','3 mi easy','11:30–12:15 /mi')],
+            [W('rw-sat','run','🏃‍♀️','2 mi shakeout','very easy · just moving')],
+            null ]
+  };
+
+  // Deep clone defaults into working weekData
+  const weekData = {};
+  function resetWeekData() {
+    Object.keys(WEEK_DEFAULTS).forEach(wid => {
+      weekData[wid] = WEEK_DEFAULTS[wid].map(slot => slot ? slot.map(w => ({...w})) : null);
     });
   }
 
-  function extractWorkout(el) {
-    return {
-      id:    el.dataset.id,
-      cls:   getWorkoutClass(el),
-      emoji: el.dataset.emoji || '',
-      label: el.querySelector('.dv') ? el.querySelector('.dv').textContent : '',
-      pace:  el.querySelector('.dp') ? el.querySelector('.dp').textContent : '',
-    };
-  }
-
-  function getWorkoutClass(el) {
-    for (const c of ['run','tempo','long','strength','travel-day','flight','raceday']) {
-      if (el.classList.contains(c)) return c;
-    }
-    return 'rest';
-  }
-
   function applyLayoutOverrides(savedLayout) {
-    Object.keys(savedLayout).forEach(wid => { if (weekData[wid]) weekData[wid] = savedLayout[wid]; });
+    Object.keys(savedLayout).forEach(wid => { if (weekData[wid] !== undefined) weekData[wid] = savedLayout[wid]; });
   }
+
+  // Fixed non-workout cells per week (never draggable, always rendered as-is)
+  const WEEK_FIXED = {
+    w1:   { 3: {cls:'rest', label:'Rest'}, 5: {cls:'rest', label:'Rest'} },
+    w2:   { 2: {cls:'rest', label:'Rest'}, 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w3:   { 0: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w4:   { 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w5:   { 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w6:   { 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w7:   { 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w8:   { 4: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    w9:   { 4: {cls:'rest', label:'Rest'}, 5: {cls:'rest', label:'Rest'}, 6: {cls:'rest', label:'Rest'} },
+    tw1:  { 0: {cls:'rest', label:'Rest'}, 1: {cls:'rest', label:'Rest'}, 2: {cls:'rest', label:'Rest'},
+            3: {cls:'flight', label:'✈ Flight to SG'}, 4: {cls:'rest', label:'Rest / arrive'} },
+    tw2:  { 0: {cls:'travel-day', label:'Walk / explore'}, 3: {cls:'travel-day', label:'Walk / explore'},
+            6: {cls:'travel-day', label:'Walk / explore'} },
+    tw3:  { 1: {cls:'rest', label:'Rest'}, 2: {cls:'rest', label:'Rest'},
+            3: {cls:'flight', label:'✈ Fly home'}, 4: {cls:'', label:''}, 5: {cls:'', label:''}, 6: {cls:'', label:''} },
+    ret1: { 0: {cls:'', label:''}, 1: {cls:'', label:''}, 2: {cls:'', label:''}, 3: {cls:'', label:''},
+            4: {cls:'rest', label:'Rest / arrive'}, 5: {cls:'rest', label:'Rest / jet lag'}, 6: {cls:'rest', label:'Rest'} },
+    rw:   { 1: {cls:'rest', label:'Rest'}, 3: {cls:'rest', label:'Rest'},
+            6: {cls:'raceday', label:'🏁 Race day!', pace:'Goal: 9:45–10:05 /mi'} }
+  };
 
   function renderWeek(wid) {
     const card = document.querySelector(`.week-card[data-week="${wid}"]`);
@@ -603,9 +679,35 @@
     if (!grid) return;
     grid.innerHTML = '';
     const slots = weekData[wid];
+    const fixed = WEEK_FIXED[wid] || {};
 
-    slots.forEach((slot, col) => {
-      if (!slot || slot.length === 0) {
+    for (let col = 0; col < 7; col++) {
+      const fixedCell = fixed[col];
+      const slot = slots[col];
+
+      if (fixedCell !== undefined) {
+        // Fixed non-workout cell — never draggable
+        if (!fixedCell.cls) {
+          // Empty spacer
+          const cell = document.createElement('div');
+          cell.className = 'day empty';
+          grid.appendChild(cell);
+        } else if (fixedCell.cls === 'rest') {
+          const cell = makeRestCell(wid, col);
+          makeDropTarget(cell, wid, col);
+          grid.appendChild(cell);
+        } else {
+          // Flight, travel-day, raceday — non-workout coloured cell
+          const cell = document.createElement('div');
+          cell.className = 'day non-workout ' + fixedCell.cls;
+          cell.dataset.col = col; cell.dataset.wid = wid;
+          const dv = document.createElement('span'); dv.className='dv'; dv.textContent=fixedCell.label;
+          cell.appendChild(dv);
+          if (fixedCell.pace) { const dp = document.createElement('span'); dp.className='dp'; dp.textContent=fixedCell.pace; cell.appendChild(dp); }
+          grid.appendChild(cell);
+        }
+      } else if (!slot || slot.length === 0) {
+        // Empty draggable slot (workout was moved away)
         const cell = makeRestCell(wid, col);
         makeDropTarget(cell, wid, col);
         grid.appendChild(cell);
@@ -614,6 +716,7 @@
         makeDropTarget(cell, wid, col);
         grid.appendChild(cell);
       } else {
+        // Stacked workouts
         const split = document.createElement('div');
         split.className = 'day-split';
         makeDropTarget(split, wid, col);
@@ -624,7 +727,7 @@
         });
         grid.appendChild(split);
       }
-    });
+    }
 
     grid.querySelectorAll('.day[data-id]').forEach(el => {
       if (completed[el.dataset.id]) el.classList.add('done');
@@ -644,6 +747,10 @@
     cell.appendChild(dv);
     return cell;
   }
+
+  // Special fixed cells that are never draggable (race day, flights, travel explore days)
+  // These are rendered inline in the HTML and left untouched by renderWeek — 
+  // renderWeek only touches .day-grid innerHTML for weeks that have workouts.
 
   function makeWorkoutCell(w, wid, col) {
     const cell = document.createElement('div');
@@ -797,7 +904,7 @@
   let completed = loadCompleted();
   let currentLayout = loadLayout();
 
-  snapshotWeeks();
+  resetWeekData();
   applyLayoutOverrides(currentLayout);
   document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
   updateProgress(completed);
@@ -830,7 +937,7 @@
     if (remoteStr === localStr) return;
     currentLayout = remoteLayout;
     try { localStorage.setItem('hm-plan-2026-layout', JSON.stringify(currentLayout)); } catch(e) {}
-    snapshotWeeks();
+    resetWeekData();
     applyLayoutOverrides(currentLayout);
     document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
   });
