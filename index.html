@@ -406,15 +406,43 @@
 
 </div>
 
-<script>
-  // ─── Storage ────────────────────────────────────────────────────────────────
-  const STORAGE_KEY = 'hm-plan-2026-completed';
-  const LAYOUT_KEY  = 'hm-plan-2026-layout';
+<script type="module">
+  // ─── Firebase setup ──────────────────────────────────────────────────────────
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  function loadCompleted() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
-  function saveCompleted(c) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {} }
-  function loadLayout() { try { const r = localStorage.getItem(LAYOUT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
-  function saveLayout(l) { try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {} }
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQQVcn2K7E-kQAcs0hqF9OxP2nYi1kdo8",
+    authDomain: "orca-half-plan.firebaseapp.com",
+    databaseURL: "https://orca-half-plan-default-rtdb.firebaseio.com",
+    projectId: "orca-half-plan",
+    storageBucket: "orca-half-plan.firebasestorage.app",
+    messagingSenderId: "543421547579",
+    appId: "1:543421547579:web:0d13827d6a9e0595f4881e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // ─── Remote save/load (replaces localStorage for completed + layout) ─────────
+  function saveCompletedRemote(c) {
+    set(ref(db, 'state/completed'), c).catch(e => console.error('Firebase save error:', e));
+  }
+  function saveLayoutRemote(l) {
+    set(ref(db, 'state/layout'), l).catch(e => console.error('Firebase save error:', e));
+  }
+
+  // ─── Keep localStorage as fallback ───────────────────────────────────────────
+  function saveCompleted(c) {
+    try { localStorage.setItem('hm-plan-2026-completed', JSON.stringify(c)); } catch(e) {}
+    saveCompletedRemote(c);
+  }
+  function saveLayout(l) {
+    try { localStorage.setItem('hm-plan-2026-layout', JSON.stringify(l)); } catch(e) {}
+    saveLayoutRemote(l);
+  }
+  function loadCompleted() { try { const r = localStorage.getItem('hm-plan-2026-completed'); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+  function loadLayout()    { try { const r = localStorage.getItem('hm-plan-2026-layout');    return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
 
   // ─── Progress bar ────────────────────────────────────────────────────────────
   function updateProgress(c) {
@@ -561,9 +589,8 @@
     return 'rest';
   }
 
-  function applyLayoutOverrides() {
-    const saved = loadLayout();
-    Object.keys(saved).forEach(wid => { if (weekData[wid]) weekData[wid] = saved[wid]; });
+  function applyLayoutOverrides(savedLayout) {
+    Object.keys(savedLayout).forEach(wid => { if (weekData[wid]) weekData[wid] = savedLayout[wid]; });
   }
 
   function renderWeek(wid) {
@@ -649,22 +676,19 @@
       document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
     });
 
-    // Touch support: tap = check, long-press + drag = move
+    // Touch: tap = check, long-press + drag = move
     let touchClone = null, longPressTimer = null, touchIsDrag = false;
     const LONG_PRESS_MS = 300;
 
     el.addEventListener('touchstart', e => {
       const t = e.touches[0];
       touchIsDrag = false;
-
       longPressTimer = setTimeout(() => {
-        // Long press confirmed — enter drag mode
         touchIsDrag = true;
         const col = parseInt(el.dataset.col);
         const slot = weekData[wid][col];
         const subIdx = slot ? slot.findIndex(w=>w.id===el.dataset.id) : 0;
         dragState = { wid, col, subIdx, workout: slot ? slot[subIdx] : null };
-        // Haptic feedback if available
         if (navigator.vibrate) navigator.vibrate(40);
         el.classList.add('dragging');
         touchClone = el.cloneNode(true);
@@ -676,19 +700,10 @@
     }, {passive:true});
 
     el.addEventListener('touchmove', e => {
-      if (!touchIsDrag) {
-        // Movement before long press fires — cancel long press, treat as scroll
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
-        return;
-      }
+      if (!touchIsDrag) { clearTimeout(longPressTimer); longPressTimer = null; return; }
       e.preventDefault();
       const t = e.touches[0];
-      if (touchClone) {
-        touchClone.style.left = (t.clientX - el.offsetWidth/2)+'px';
-        touchClone.style.top  = (t.clientY - el.offsetHeight/2 - 10)+'px';
-      }
-      // Find drop target under finger (hide clone temporarily)
+      if (touchClone) { touchClone.style.left=(t.clientX-el.offsetWidth/2)+'px'; touchClone.style.top=(t.clientY-el.offsetHeight/2-10)+'px'; }
       if (touchClone) touchClone.style.display='none';
       const under = document.elementFromPoint(t.clientX, t.clientY);
       if (touchClone) touchClone.style.display='';
@@ -702,11 +717,8 @@
       el.classList.remove('dragging');
       if (touchClone) { touchClone.remove(); touchClone=null; }
       document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
-
       if (touchIsDrag) {
-        // Complete the drag
         const t = e.changedTouches[0];
-        if (touchClone) touchClone.style.display='none';
         const under = document.elementFromPoint(t.clientX, t.clientY);
         const target = under ? under.closest('[data-drop-target="true"]') : null;
         if (target && target.dataset.wid === wid) handleDrop(target);
@@ -714,13 +726,11 @@
         dragState = null;
         touchIsDrag = false;
       }
-      // If not a drag, touchend falls through to the click handler naturally
     });
 
     el.addEventListener('touchcancel', () => {
       clearTimeout(longPressTimer);
-      touchIsDrag = false;
-      dragState = null;
+      touchIsDrag = false; dragState = null;
       el.classList.remove('dragging');
       if (touchClone) { touchClone.remove(); touchClone=null; }
       document.querySelectorAll('.drop-over').forEach(d=>d.classList.remove('drop-over'));
@@ -732,7 +742,6 @@
     el.dataset.dropTarget = 'true';
     el.dataset.wid = wid;
     el.dataset.col = col;
-
     el.addEventListener('dragover', e => {
       if (!dragState || dragState.wid !== wid) return;
       e.preventDefault(); e.dataTransfer.dropEffect='move';
@@ -752,34 +761,66 @@
     const destCol = parseInt(target.dataset.col);
     if (isNaN(destCol) || destCol === srcCol) return;
     const slots = weekData[wid];
-
-    // Remove from source
     const srcSlot = slots[srcCol];
     if (!srcSlot) return;
     srcSlot.splice(subIdx, 1);
     slots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
-
-    // Add to destination
     slots[destCol] = slots[destCol] ? [...slots[destCol], workout] : [workout];
-
-    const saved = loadLayout();
-    saved[wid] = slots;
-    saveLayout(saved);
+    saveLayout(JSON.parse(JSON.stringify(weekData)));
     renderWeek(wid);
   }
 
   // ─── Init ────────────────────────────────────────────────────────────────────
   let completed = loadCompleted();
+  let currentLayout = loadLayout();
+
   snapshotWeeks();
-  applyLayoutOverrides();
+  applyLayoutOverrides(currentLayout);
   document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
   updateProgress(completed);
 
+  // ─── Firebase real-time sync ──────────────────────────────────────────────────
+  // Listen for completed state changes from other devices
+  onValue(ref(db, 'state/completed'), snapshot => {
+    const remoteCompleted = snapshot.val();
+    if (!remoteCompleted) return;
+    // Only update if different from current local state
+    const remoteStr = JSON.stringify(remoteCompleted);
+    const localStr  = JSON.stringify(completed);
+    if (remoteStr === localStr) return;
+    completed = remoteCompleted;
+    try { localStorage.setItem('hm-plan-2026-completed', JSON.stringify(completed)); } catch(e) {}
+    // Update all cells
+    document.querySelectorAll('.day[data-id]').forEach(el => {
+      el.classList.toggle('done', !!completed[el.dataset.id]);
+    });
+    document.querySelectorAll('.week-card[data-week]').forEach(card => refreshWeekComplete(card, completed));
+    updateProgress(completed);
+  });
+
+  // Listen for layout changes from other devices
+  onValue(ref(db, 'state/layout'), snapshot => {
+    const remoteLayout = snapshot.val();
+    if (!remoteLayout) return;
+    const remoteStr = JSON.stringify(remoteLayout);
+    const localStr  = JSON.stringify(currentLayout);
+    if (remoteStr === localStr) return;
+    currentLayout = remoteLayout;
+    try { localStorage.setItem('hm-plan-2026-layout', JSON.stringify(currentLayout)); } catch(e) {}
+    snapshotWeeks();
+    applyLayoutOverrides(currentLayout);
+    document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
+  });
+
+  // ─── Reset ───────────────────────────────────────────────────────────────────
   document.getElementById('reset-btn').addEventListener('click', () => {
     if (!confirm('Reset all checkmarks and layout changes?')) return;
     completed = {};
+    currentLayout = {};
     saveCompleted(completed);
-    localStorage.removeItem(LAYOUT_KEY);
+    saveLayout(currentLayout);
+    localStorage.removeItem('hm-plan-2026-completed');
+    localStorage.removeItem('hm-plan-2026-layout');
     location.reload();
   });
 </script>
