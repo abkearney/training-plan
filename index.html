@@ -10,12 +10,12 @@
   :root {
     --bg: #f7f6f3; --surface: #ffffff; --border: #e4e2db; --border-mid: #d0cec6;
     --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #363636;
-    --run-bg: #d8d0f8; --run-text: #3b1fa8;
-    --long-bg: #b5d4f4; --long-text: #0c447c;
-    --strength-bg: #f0d8f0; --strength-text: #6a1a6a;
+    --run-bg: #ffffff; --run-text: #3b1fa8;
+    --long-bg: #ffffff; --long-text: #1258a0;
+    --strength-bg: #ffffff; --strength-text: #b848a8;
     --travel-bg: #fad8a0; --travel-text: #6b3c08;
     --flight-bg: #f5bfab; --flight-text: #6b2210;
-    --rest-bg: #f0f0f0; --rest-text: #363636;
+    --rest-bg: #ffffff; --rest-text: #363636;
     --travel-accent: #40E0D0; --travel-orig: #2a8a60; --taper-accent: #8a6a10; --race-accent: #4a3faa;
     --phase1: #1a5fa8; --phase2: #4a3faa;
     --radius: 8px; --radius-sm: 5px;
@@ -72,18 +72,21 @@
   .day:not(.empty):not(.non-workout):active { transform: scale(0.97); }
   .day.empty { background: transparent; cursor: default; }
   .day.non-workout { cursor: default; }
+  .day.rest { background: #ffffff !important; box-shadow: inset 0 0 0 1.5px #cccccc; }
   .day .dd { color: #363636; display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
   .day .dv { font-weight: 600; color: var(--rest-text); display: block; font-size: 10px; line-height: 1.3; }
   .day .dp { display: block; font-size: 8px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
-  .day.run { background: var(--run-bg); } .day.run .dv { color: var(--run-text); } .day.run .dp { color: var(--run-text); }
-  .day.tempo { background: #fff3b0; } .day.tempo .dv { color: #7a5c00; } .day.tempo .dp { color: #7a5c00; }
-  .day.long { background: var(--long-bg); } .day.long .dv { color: var(--long-text); } .day.long .dp { color: var(--long-text); }
-  .day.strength { background: var(--strength-bg); } .day.strength .dv { color: var(--strength-text); }
-  .day.travel-day { background: var(--travel-bg); } .day.travel-day .dv { color: var(--travel-text); }
-  .day.flight { background: var(--flight-bg); } .day.flight .dv { color: var(--flight-text); }
-  .day.raceday { background: var(--long-bg); } .day.raceday .dv { color: var(--long-text); font-size: 9px; }
-  .day.done::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: var(--check-color); background: rgba(255,255,255,0.55); border-radius: var(--radius-sm); pointer-events: none; }
-  .day.done { box-shadow: inset 0 0 0 1.5px var(--check-color); }
+  .day.run { background: #ffffff; box-shadow: inset 0 0 0 1.5px #3b1fa8; } .day.run .dv { color: #3b1fa8; } .day.run .dp { color: #3b1fa8; }
+  .day.tempo { background: #ffffff; box-shadow: inset 0 0 0 1.5px #c09400; } .day.tempo .dv { color: #c09400; } .day.tempo .dp { color: #c09400; }
+  .day.long { background: #ffffff; box-shadow: inset 0 0 0 1.5px #1258a0; } .day.long .dv { color: #1258a0; } .day.long .dp { color: #1258a0; }
+  .day.strength { background: #ffffff; box-shadow: inset 0 0 0 1.5px #b848a8; } .day.strength .dv { color: #b848a8; }
+  .day.travel-day { background: #ffffff; box-shadow: inset 0 0 0 1.5px var(--travel-text); } .day.travel-day .dv { color: var(--travel-text); }
+  .day.flight { background: #ffffff; box-shadow: inset 0 0 0 1.5px var(--flight-text); } .day.flight .dv { color: var(--flight-text); }
+  .day.raceday { background: #ffffff; box-shadow: inset 0 0 0 1.5px #f0956a; } .day.raceday .dv { color: #c45a2a; font-size: 9px; } .day.raceday .dp { color: #c45a2a; }
+  .day.done::after { content: '✓'; position: absolute; top: 3px; right: 4px; font-size: 14px; font-weight: 700; color: var(--check-color); background: none; pointer-events: none; }
+  .day.done { }
+  .day.done:not(.rest)::before, .day.done.has-note::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.45); border-radius: var(--radius-sm); pointer-events: none; z-index: 0; }
+  .day.done::after { z-index: 1; }
   .day-split { display: flex; flex-direction: column; gap: 3px; }
   .day-split .day { flex: 1; }
   .day-split .day .dd { display: none; }
@@ -132,23 +135,23 @@
   <div class="pace-card">
     <div class="pace-card-title">Pace Reference · Based on Jun 20 result (2:16:04) · HR cap: easy ≤145 bpm · tempo 155–165 bpm</div>
     <div class="pace-grid">
-      <div class="pace-item" style="background:#d8d0f8">
+      <div class="pace-item" style="background:#ffffff; box-shadow: inset 0 0 0 1.5px #3b1fa8;">
         <div class="pace-item-label" style="color:#3b1fa8">Easy Run</div>
         <div class="pace-item-value">11:30 – 12:15 /mi</div>
         <div class="pace-item-note">Fully conversational · ≤145 bpm</div>
       </div>
-      <div class="pace-item" style="background:var(--long-bg)">
-        <div class="pace-item-label" style="color:var(--long-text)">Long Run</div>
+      <div class="pace-item" style="background:#ffffff; box-shadow: inset 0 0 0 1.5px #1258a0;">
+        <div class="pace-item-label" style="color:#1258a0">Long Run</div>
         <div class="pace-item-value">11:45 – 12:30 /mi</div>
         <div class="pace-item-note">Easy feel · slower on 10+ mi weeks</div>
       </div>
-      <div class="pace-item" style="background:#fff3b0">
-        <div class="pace-item-label" style="color:#7a5c00">Tempo (work miles)</div>
+      <div class="pace-item" style="background:#ffffff; box-shadow: inset 0 0 0 1.5px #c09400;">
+        <div class="pace-item-label" style="color:#c09400">Tempo (work miles)</div>
         <div class="pace-item-value">10:00 – 10:15 /mi</div>
         <div class="pace-item-note">Comfortably hard · 155–165 bpm</div>
       </div>
-      <div class="pace-item" style="background:#c0e8d0">
-        <div class="pace-item-label" style="color:#1a6b40">Race Goal</div>
+      <div class="pace-item" style="background:#ffffff; box-shadow: inset 0 0 0 1.5px #f0956a;">
+        <div class="pace-item-label" style="color:#c45a2a">Race Goal</div>
         <div class="pace-item-value">9:45 – 10:05 /mi</div>
         <div class="pace-item-note">Target finish: 2:08 – 2:12</div>
       </div>
@@ -160,9 +163,9 @@
   </div>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#d8d0f8; border: 1px solid #3b1fa8;"></div>Easy run</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#fff3b0; border: 1px solid #c8a800;"></div>Tempo / hills</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#6aaae0"></div>Long run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffffff; border: 1.5px solid #3b1fa8;"></div>Easy run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffffff; border: 1.5px solid #c09400;"></div>Tempo / hills</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffffff; border: 1.5px solid #1258a0;"></div>Long run</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e8c8e8"></div>Strength</div>
     <div class="legend-item"><div class="legend-dot" style="background:#f0b84a"></div>Travel day</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e88060"></div>Flight</div>
@@ -903,6 +906,30 @@
         notes[noteKey] = val;
         saveNotes(notes);
         applyNote(cell, val);
+        // Mark as done if note added, unmark if note cleared
+        if (val) {
+          completed[noteKey] = true;
+        } else {
+          delete completed[noteKey];
+        }
+        saveCompleted(completed);
+        updateProgress(completed);
+        // Apply/remove done checkmark
+        if (val) {
+          cell.classList.add('done');
+        } else {
+          cell.classList.remove('done');
+        }
+        // Check week complete
+        const card = cell.closest('.week-card[data-week]');
+        if (card) {
+          if (checkWeekComplete(card, completed)) {
+            card.classList.add('week-complete');
+            setTimeout(() => { launchConfetti(); showToast(getWeekName(card) + ' complete! 🎉'); }, 400);
+          } else {
+            card.classList.remove('week-complete');
+          }
+        }
       }
 
       input.addEventListener('blur', commit);
@@ -968,10 +995,16 @@
 
 <style>
   .day { min-height: 58px; display: flex; flex-direction: column; justify-content: center; }
+  .day { min-height: 58px; display: flex; flex-direction: column; justify-content: center; }
   .day[draggable="true"] { cursor: grab; }
   .day:not(.empty):not(.non-workout) { cursor: pointer; -webkit-tap-highlight-color: rgba(0,0,0,0.08); }
   .day.dragging { opacity: 0.35; transform: scale(0.96); }
   [data-drop-target="true"].drop-over { outline: 2px dashed #4a3faa !important; outline-offset: 1px; background-color: #f0eefe !important; border-radius: var(--radius-sm); }
+  .day.has-note { background: #ffffff !important; box-shadow: inset 0 0 0 1.5px #5EBB66 !important; }
+  .day.has-note .dv { color: #363636 !important; }
+  .day.has-note .dd { color: #363636 !important; }
+  .day-note { font-size: 10px; font-weight: 600; margin-top: 2px; display: block; line-height: 1.3; word-break: break-word; color: #363636; }
+  .day-note-input { width: 100%; border: none; background: transparent; font-size: 10px; font-family: inherit; color: #363636; outline: none; resize: none; padding: 0; margin-top: 2px; line-height: 1.3; }
 </style>
 </body>
 </html>
