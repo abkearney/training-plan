@@ -10,9 +10,9 @@
   :root {
     --bg: #f7f6f3; --surface: #ffffff; --border: #e4e2db; --border-mid: #d0cec6;
     --text-primary: #1a1917; --text-secondary: #6b6860; --text-muted: #363636;
-    --run-bg: #d4cef5; --run-text: #3b1fa8;
+    --run-bg: #d8d0f8; --run-text: #3b1fa8;
     --long-bg: #b5d4f4; --long-text: #0c447c;
-    --strength-bg: #e8c8e8; --strength-text: #6a1a6a;
+    --strength-bg: #f0d8f0; --strength-text: #6a1a6a;
     --travel-bg: #fad8a0; --travel-text: #6b3c08;
     --flight-bg: #f5bfab; --flight-text: #6b2210;
     --rest-bg: #f0f0f0; --rest-text: #363636;
@@ -76,7 +76,7 @@
   .day .dv { font-weight: 600; color: var(--rest-text); display: block; font-size: 10px; line-height: 1.3; }
   .day .dp { display: block; font-size: 8px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
   .day.run { background: var(--run-bg); } .day.run .dv { color: var(--run-text); } .day.run .dp { color: var(--run-text); }
-  .day.tempo { background: var(--run-bg); } .day.tempo .dv { color: var(--run-text); } .day.tempo .dp { color: var(--run-text); }
+  .day.tempo { background: #fff3b0; } .day.tempo .dv { color: #7a5c00; } .day.tempo .dp { color: #7a5c00; }
   .day.long { background: var(--long-bg); } .day.long .dv { color: var(--long-text); } .day.long .dp { color: var(--long-text); }
   .day.strength { background: var(--strength-bg); } .day.strength .dv { color: var(--strength-text); }
   .day.travel-day { background: var(--travel-bg); } .day.travel-day .dv { color: var(--travel-text); }
@@ -132,8 +132,8 @@
   <div class="pace-card">
     <div class="pace-card-title">Pace Reference · Based on Jun 20 result (2:16:04) · HR cap: easy ≤145 bpm · tempo 155–165 bpm</div>
     <div class="pace-grid">
-      <div class="pace-item" style="background:var(--run-bg)">
-        <div class="pace-item-label" style="color:var(--run-text)">Easy Run</div>
+      <div class="pace-item" style="background:#d8d0f8">
+        <div class="pace-item-label" style="color:#3b1fa8">Easy Run</div>
         <div class="pace-item-value">11:30 – 12:15 /mi</div>
         <div class="pace-item-note">Fully conversational · ≤145 bpm</div>
       </div>
@@ -142,8 +142,8 @@
         <div class="pace-item-value">11:45 – 12:30 /mi</div>
         <div class="pace-item-note">Easy feel · slower on 10+ mi weeks</div>
       </div>
-      <div class="pace-item" style="background:var(--run-bg)">
-        <div class="pace-item-label" style="color:var(--run-text)">Tempo (work miles)</div>
+      <div class="pace-item" style="background:#fff3b0">
+        <div class="pace-item-label" style="color:#7a5c00">Tempo (work miles)</div>
         <div class="pace-item-value">10:00 – 10:15 /mi</div>
         <div class="pace-item-note">Comfortably hard · 155–165 bpm</div>
       </div>
@@ -160,7 +160,8 @@
   </div>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#a090e8"></div>Easy / tempo run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8d0f8; border: 1px solid #3b1fa8;"></div>Easy run</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fff3b0; border: 1px solid #c8a800;"></div>Tempo / hills</div>
     <div class="legend-item"><div class="legend-dot" style="background:#6aaae0"></div>Long run</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e8c8e8"></div>Strength</div>
     <div class="legend-item"><div class="legend-dot" style="background:#f0b84a"></div>Travel day</div>
@@ -267,7 +268,7 @@
       <div class="day-grid">
         <div class="day run" data-id="w6-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 27</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
         <div class="day strength" data-id="w6-tue" data-emoji="💪"><span class="dd">Jul 28</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w6-wed" data-emoji="⚡"><span class="dd">Jul 29</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day tempo" data-id="w6-wed" data-emoji="⚡"><span class="dd">Jul 29</span><span class="dv">Hill workout</span><span class="dp">1mi wu · 6–8 x 90sec hill · jog down · 1mi cd</span></div>
         <div class="day strength" data-id="w6-thu" data-emoji="💪"><span class="dd">Jul 30</span><span class="dv">Strength</span></div>
         <div class="day non-workout rest"><span class="dd">Jul 31</span><span class="dv">Rest</span></div>
         <div class="day long" data-id="w6-sat" data-emoji="🎽"><span class="dd">Aug 1</span><span class="dv">11 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
@@ -422,6 +423,10 @@
   function saveCompleted(c) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {} }
   function loadLayout()    { try { const r = localStorage.getItem(LAYOUT_KEY);    return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
   function saveLayout(l)   { try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); } catch(e) {} }
+
+  const NOTES_KEY = 'hm-plan-2026-notes';
+  function loadNotes()  { try { const r = localStorage.getItem(NOTES_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+  function saveNotes(n) { try { localStorage.setItem(NOTES_KEY, JSON.stringify(n)); } catch(e) {} }
 
   // ─── Progress bar ────────────────────────────────────────────────────────────
   function updateProgress(c) {
@@ -637,6 +642,7 @@
         if (fixed) {
           const cell = document.createElement('div');
           cell.className = 'day non-workout ' + fixed.cls;
+          cell.dataset.col = col; cell.dataset.wid = wid;
           if (fixed.dd) { const dd = document.createElement('span'); dd.className='dd'; dd.textContent=fixed.dd; cell.appendChild(dd); }
           const dv = document.createElement('span'); dv.className='dv'; dv.textContent=fixed.label; cell.appendChild(dv);
           if (fixed.pace) { const dp = document.createElement('span'); dp.className='dp'; dp.textContent=fixed.pace; cell.appendChild(dp); }
@@ -674,6 +680,12 @@
 
     refreshWeekComplete(card, completed);
     updateProgress(completed);
+    // Re-attach notes to any rest cells in this week
+    grid.querySelectorAll('.day.non-workout.rest').forEach(cell => {
+      const key = wid + '-' + cell.dataset.col + '-note';
+      attachNote(cell, key);
+      if (notes[key]) applyNote(cell, notes[key]);
+    });
   }
 
   function makeRestCell(wid, col) {
@@ -755,7 +767,7 @@
       if (touchClone) touchClone.style.display = '';
       document.querySelectorAll('.drop-over').forEach(d => d.classList.remove('drop-over'));
       const target = under ? under.closest('[data-drop-target="true"]') : null;
-      if (target && target.dataset.wid === wid) target.classList.add('drop-over');
+      if (target) target.classList.add('drop-over');
     }, {passive: false});
 
     el.addEventListener('touchend', e => {
@@ -768,7 +780,7 @@
         const t = e.changedTouches[0];
         const under = document.elementFromPoint(t.clientX, t.clientY);
         const target = under ? under.closest('[data-drop-target="true"]') : null;
-        if (target && target.dataset.wid === wid) handleDrop(target);
+        if (target) handleDrop(target);
         el._wasDragged = true;
         dragState = null;
         touchIsDrag = false;
@@ -810,31 +822,129 @@
     el.dataset.wid = wid;
     el.dataset.col = col;
     el.addEventListener('dragover', e => {
-      if (!dragState || dragState.wid !== wid) return;
+      if (!dragState) return;
       e.preventDefault(); e.dataTransfer.dropEffect = 'move';
       el.classList.add('drop-over');
     });
     el.addEventListener('dragleave', () => el.classList.remove('drop-over'));
     el.addEventListener('drop', e => {
       e.preventDefault(); el.classList.remove('drop-over');
-      if (!dragState || dragState.wid !== wid) return;
+      if (!dragState) return;
       handleDrop(el);
     });
   }
 
   function handleDrop(target) {
     if (!dragState) return;
-    const { wid, col: srcCol, subIdx, workout } = dragState;
+    const { wid: srcWid, col: srcCol, subIdx, workout } = dragState;
+    const destWid = target.dataset.wid;
     const destCol = parseInt(target.dataset.col);
-    if (isNaN(destCol) || destCol === srcCol) return;
-    const slots = weekData[wid];
-    const srcSlot = slots[srcCol];
+    if (!destWid || isNaN(destCol)) return;
+    if (srcWid === destWid && destCol === srcCol) return; // same slot, no-op
+
+    // Remove from source
+    const srcSlots = weekData[srcWid];
+    const srcSlot = srcSlots[srcCol];
     if (!srcSlot) return;
     srcSlot.splice(subIdx, 1);
-    slots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
-    slots[destCol] = slots[destCol] ? [...slots[destCol], workout] : [workout];
+    srcSlots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
+
+    // Add to destination
+    const destSlots = weekData[destWid];
+    destSlots[destCol] = destSlots[destCol] ? [...destSlots[destCol], workout] : [workout];
+
     saveLayout(JSON.parse(JSON.stringify(weekData)));
-    renderWeek(wid);
+    renderWeek(srcWid);
+    if (destWid !== srcWid) renderWeek(destWid);
+  }
+
+  // ─── Notes ───────────────────────────────────────────────────────────────────
+  let notes = loadNotes();
+
+  function applyNote(cell, noteText) {
+    // Remove existing note span if any
+    const existing = cell.querySelector('.day-note');
+    if (existing) existing.remove();
+    if (noteText) {
+      cell.classList.add('has-note');
+      const span = document.createElement('span');
+      span.className = 'day-note';
+      span.textContent = noteText;
+      cell.appendChild(span);
+    } else {
+      cell.classList.remove('has-note');
+    }
+  }
+
+  function attachNote(cell, noteKey) {
+    // Double-click / double-tap opens inline editor
+    let tapTimer = null;
+
+    function openEditor() {
+      const existing = cell.querySelector('.day-note');
+      const currentNote = notes[noteKey] || '';
+
+      // Replace note span with input
+      if (existing) existing.remove();
+      cell.classList.add('has-note');
+
+      const input = document.createElement('textarea');
+      input.className = 'day-note-input';
+      input.value = currentNote;
+      input.rows = 2;
+      input.placeholder = 'add note…';
+      cell.appendChild(input);
+      input.focus();
+      input.select();
+
+      function commit() {
+        const val = input.value.trim();
+        input.remove();
+        notes[noteKey] = val;
+        saveNotes(notes);
+        applyNote(cell, val);
+      }
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = notes[noteKey] || ''; input.blur(); }
+      });
+      // Prevent click on input from toggling done state
+      input.addEventListener('click', e => e.stopPropagation());
+      input.addEventListener('touchstart', e => e.stopPropagation(), {passive:true});
+    }
+
+    // Desktop: dblclick
+    cell.addEventListener('dblclick', e => {
+      e.stopPropagation();
+      openEditor();
+    });
+
+    // Mobile: two taps within 300ms
+    cell.addEventListener('touchend', e => {
+      if (tapTimer) {
+        clearTimeout(tapTimer);
+        tapTimer = null;
+        e.stopPropagation();
+        e.preventDefault();
+        openEditor();
+      } else {
+        tapTimer = setTimeout(() => { tapTimer = null; }, 300);
+      }
+    });
+  }
+
+  function initNotes() {
+    // Attach note capability to all rest cells and re-apply saved notes
+    document.querySelectorAll('.day.non-workout.rest').forEach(cell => {
+      const wid = cell.dataset.wid || cell.closest('[data-week]')?.dataset.week;
+      const col = cell.dataset.col;
+      if (!wid || col === undefined) return;
+      const key = wid + '-' + col + '-note';
+      attachNote(cell, key);
+      if (notes[key]) applyNote(cell, notes[key]);
+    });
   }
 
   // ─── Init ────────────────────────────────────────────────────────────────────
@@ -843,6 +953,7 @@
   applyLayoutOverrides();
   document.querySelectorAll('.week-card[data-week]').forEach(card => renderWeek(card.dataset.week));
   updateProgress(completed);
+  initNotes();
 
   document.getElementById('reset-btn').addEventListener('click', () => {
     if (!confirm('Reset all checkmarks and layout changes?')) return;
@@ -850,6 +961,7 @@
     saveCompleted({});
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LAYOUT_KEY);
+    localStorage.removeItem(NOTES_KEY);
     location.reload();
   });
 </script>
