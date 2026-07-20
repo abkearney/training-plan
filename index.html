@@ -72,6 +72,7 @@
   .day:not(.empty):not(.non-workout):active { transform: scale(0.97); }
   .day.empty { background: transparent; cursor: default; }
   .day.non-workout { cursor: default; }
+  .day.rest:not(.non-workout) { cursor: grab; }
   .day.rest { background: #ffffff !important; box-shadow: inset 0 0 0 1.5px #cccccc; }
   .day .dd { color: #363636; display: block; margin-bottom: 2px; font-size: 9px; font-weight: 500; }
   .day .dv { font-weight: 600; color: var(--rest-text); display: block; font-size: 10px; line-height: 1.3; }
@@ -80,8 +81,8 @@
   .day.tempo { background: #ffffff; box-shadow: inset 0 0 0 1.5px #c09400; } .day.tempo .dv { color: #c09400; } .day.tempo .dp { color: #c09400; }
   .day.long { background: #ffffff; box-shadow: inset 0 0 0 1.5px #1258a0; } .day.long .dv { color: #1258a0; } .day.long .dp { color: #1258a0; }
   .day.strength { background: #ffffff; box-shadow: inset 0 0 0 1.5px #b848a8; } .day.strength .dv { color: #b848a8; }
-  .day.travel-day { background: #ffffff; box-shadow: inset 0 0 0 1.5px var(--travel-text); } .day.travel-day .dv { color: var(--travel-text); }
-  .day.flight { background: #ffffff; box-shadow: inset 0 0 0 1.5px var(--flight-text); } .day.flight .dv { color: var(--flight-text); }
+  .day.travel-day { background: #ffffff; box-shadow: inset 0 0 0 1.5px #00a8a8; } .day.travel-day .dv { color: #00a8a8; }
+  .day.flight { background: #ffffff; box-shadow: inset 0 0 0 1.5px #00a8a8; } .day.flight .dv { color: #00a8a8; }
   .day.raceday { background: #ffffff; box-shadow: inset 0 0 0 1.5px #f0956a; } .day.raceday .dv { color: #c45a2a; font-size: 9px; } .day.raceday .dp { color: #c45a2a; }
   .day.done::after { content: '✓'; position: absolute; top: 3px; right: 4px; font-size: 14px; font-weight: 700; color: var(--check-color); background: none; pointer-events: none; }
   .day.done { }
@@ -168,7 +169,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:#ffffff; border: 1.5px solid #1258a0;"></div>Long run</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e8c8e8"></div>Strength</div>
     <div class="legend-item"><div class="legend-dot" style="background:#f0b84a"></div>Travel day</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#e88060"></div>Flight</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffffff; border: 1.5px solid #00a8a8;"></div>Flight</div>
     <div class="legend-item"><div class="legend-dot" style="background:#d8d8d8"></div>Rest</div>
     <div class="legend-item"><div class="legend-dot" style="background:#1a7a40"></div>✓ Completed</div>
   </div>
@@ -185,9 +186,9 @@
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div>
-        <div class="day non-workout rest" data-col="3"><span class="dd">Jun 25</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="3"><span class="dv">Rest</span></div>
         <div class="day run" data-col="4" data-id="w1-fri" data-emoji="🏃‍♀️"><span class="dd">Jun 26</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day non-workout rest" data-col="5"><span class="dd">Jun 27</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="5"><span class="dv">Rest</span></div>
         <div class="day run" data-col="6" data-id="w1-sun" data-emoji="🏃‍♀️"><span class="dd">Jun 28</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
       </div>
       <p class="week-note">Felt strong on Jun 20 — short easy runs only before jumping into long runs next week.</p>
@@ -197,16 +198,16 @@
       <div class="week-top"><span class="week-label">Week 2 <span class="badge b-teal">Base</span></span><span class="week-dates">Jun 29 – Jul 5</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day strength" data-id="w2-mon" data-emoji="💪"><span class="dd">Jun 29</span><span class="dv">Strength</span></div>
-        <div class="day run" data-id="w2-tue" data-emoji="🏃‍♀️"><span class="dd">Jun 30</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 1</span><span class="dv">Rest</span></div>
+        <div class="day strength" data-id="w2-mon" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day run" data-id="w2-tue" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
         <div class="day-split">
-          <div class="day run day-top" data-id="w2-thu-run" data-emoji="🏃‍♀️"><span class="dd">Jul 2</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+          <div class="day run day-top" data-id="w2-thu-run" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
           <div class="day strength" data-id="w2-thu-str" data-emoji="💪"><span class="dv">Strength</span></div>
         </div>
-        <div class="day non-workout rest"><span class="dd">Jul 3</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w2-sat" data-emoji="🎽"><span class="dd">Jul 4</span><span class="dv">6 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 5</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w2-sat" data-emoji="🎽"><span class="dv">6 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Thu Jul 2: run first, then strength. Each can be checked off independently.</p>
     </div>
@@ -215,13 +216,13 @@
       <div class="week-top"><span class="week-label">Week 3 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 6 – Jul 12</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day non-workout rest"><span class="dd">Jul 6</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="w3-tue" data-emoji="🏃‍♀️"><span class="dd">Jul 7</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w3-wed" data-emoji="💪"><span class="dd">Jul 8</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w3-thu" data-emoji="⚡"><span class="dd">Jul 9</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w3-fri" data-emoji="💪"><span class="dd">Jul 10</span><span class="dv">Strength</span></div>
-        <div class="day long" data-id="w3-sat" data-emoji="🎽"><span class="dd">Jul 11</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 12</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w3-tue" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w3-wed" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w3-thu" data-emoji="⚡"><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w3-fri" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day long" data-id="w3-sat" data-emoji="🎽"><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Fri Jul 10 strength follows Thursday's tempo — keep it a lighter session than usual.</p>
     </div>
@@ -230,13 +231,13 @@
       <div class="week-top"><span class="week-label">Week 4 <span class="badge b-amber">Cutback</span></span><span class="week-dates">Jul 13 – Jul 19</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w4-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 13</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w4-tue" data-emoji="💪"><span class="dd">Jul 14</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w4-wed" data-emoji="⚡"><span class="dd">Jul 15</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
-        <div class="day strength" data-id="w4-thu" data-emoji="💪"><span class="dd">Jul 16</span><span class="dv">Strength</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 17</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w4-sat" data-emoji="🎽"><span class="dd">Jul 18</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 19</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w4-mon" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w4-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w4-wed" data-emoji="⚡"><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
+        <div class="day strength" data-id="w4-thu" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w4-sat" data-emoji="🎽"><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Recovery week — keep effort easy, reduce strength volume ~20%</p>
     </div>
@@ -255,13 +256,13 @@
       <div class="week-top"><span class="week-label">Week 5 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 20 – Jul 26</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w5-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 20</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w5-tue" data-emoji="💪"><span class="dd">Jul 21</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w5-wed" data-emoji="⚡"><span class="dd">Jul 22</span><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w5-thu" data-emoji="💪"><span class="dd">Jul 23</span><span class="dv">Strength</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 24</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w5-sat" data-emoji="🎽"><span class="dd">Jul 25</span><span class="dv">10 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 26</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w5-mon" data-emoji="🏃‍♀️"><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w5-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w5-wed" data-emoji="⚡"><span class="dv">6 mi tempo</span><span class="dp">1mi wu · 4mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w5-thu" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w5-sat" data-emoji="🎽"><span class="dv">10 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
     </div>
 
@@ -269,13 +270,13 @@
       <div class="week-top"><span class="week-label">Week 6 <span class="badge b-teal">Build</span></span><span class="week-dates">Jul 27 – Aug 2</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w6-mon" data-emoji="🏃‍♀️"><span class="dd">Jul 27</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w6-tue" data-emoji="💪"><span class="dd">Jul 28</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w6-wed" data-emoji="⚡"><span class="dd">Jul 29</span><span class="dv">Hill workout</span><span class="dp">1mi wu · 6–8 x 90sec hill · jog down · 1mi cd</span></div>
-        <div class="day strength" data-id="w6-thu" data-emoji="💪"><span class="dd">Jul 30</span><span class="dv">Strength</span></div>
-        <div class="day non-workout rest"><span class="dd">Jul 31</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w6-sat" data-emoji="🎽"><span class="dd">Aug 1</span><span class="dv">11 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 2</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w6-mon" data-emoji="🏃‍♀️"><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w6-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w6-wed" data-emoji="⚡"><span class="dv">Hill workout</span><span class="dp">1mi wu · 6–8 x 90sec hill · jog down · 1mi cd</span></div>
+        <div class="day strength" data-id="w6-thu" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w6-sat" data-emoji="🎽"><span class="dv">11 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
     </div>
 
@@ -283,13 +284,13 @@
       <div class="week-top"><span class="week-label">Week 7 <span class="badge b-teal">Peak</span></span><span class="week-dates">Aug 3 – Aug 9</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w7-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 3</span><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w7-tue" data-emoji="💪"><span class="dd">Aug 4</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w7-wed" data-emoji="⚡"><span class="dd">Aug 5</span><span class="dv">7 mi tempo</span><span class="dp">1mi wu · 5mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w7-thu" data-emoji="💪"><span class="dd">Aug 6</span><span class="dv">Strength</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 7</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w7-sat" data-emoji="🎽"><span class="dd">Aug 8</span><span class="dv">13 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 9</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w7-mon" data-emoji="🏃‍♀️"><span class="dv">5 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w7-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w7-wed" data-emoji="⚡"><span class="dv">7 mi tempo</span><span class="dp">1mi wu · 5mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w7-thu" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w7-sat" data-emoji="🎽"><span class="dv">13 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Peak long run — simulate race conditions if possible</p>
     </div>
@@ -298,13 +299,13 @@
       <div class="week-top"><span class="week-label">Week 8 <span class="badge b-amber">Cutback</span></span><span class="week-dates">Aug 10 – Aug 16</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w8-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 10</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w8-tue" data-emoji="💪"><span class="dd">Aug 11</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w8-wed" data-emoji="⚡"><span class="dd">Aug 12</span><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
-        <div class="day strength" data-id="w8-thu" data-emoji="💪"><span class="dd">Aug 13</span><span class="dv">Strength</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 14</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w8-sat" data-emoji="🎽"><span class="dd">Aug 15</span><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 16</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w8-mon" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w8-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w8-wed" data-emoji="⚡"><span class="dv">5 mi tempo</span><span class="dp">1mi wu · 3mi @ 10:00–10:15 · 1mi cd</span></div>
+        <div class="day strength" data-id="w8-thu" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w8-sat" data-emoji="🎽"><span class="dv">7 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Reduce strength volume ~20% — fresher legs for travel matter more than a PR lift</p>
     </div>
@@ -313,13 +314,13 @@
       <div class="week-top"><span class="week-label">Pre-travel wind-down</span><span class="week-dates">Aug 17 – Aug 26</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="w9-mon" data-emoji="🏃‍♀️"><span class="dd">Aug 17</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day strength" data-id="w9-tue" data-emoji="💪"><span class="dd">Aug 18</span><span class="dv">Strength</span></div>
-        <div class="day tempo" data-id="w9-wed" data-emoji="⚡"><span class="dd">Aug 19</span><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
-        <div class="day strength" data-id="w9-thu" data-emoji="💪"><span class="dd">Aug 20</span><span class="dv">Strength (light)</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 21</span><span class="dv">Rest</span></div>
-        <div class="day long" data-id="w9-sat" data-emoji="🎽"><span class="dd">Aug 22</span><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Aug 23</span><span class="dv">Rest</span></div>
+        <div class="day run" data-id="w9-mon" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day strength" data-id="w9-tue" data-emoji="💪"><span class="dv">Strength</span></div>
+        <div class="day tempo" data-id="w9-wed" data-emoji="⚡"><span class="dv">4 mi tempo</span><span class="dp">0.75mi wu · 2.5mi @ 10:00–10:15 · 0.75mi cd</span></div>
+        <div class="day strength" data-id="w9-thu" data-emoji="💪"><span class="dv">Strength (light)</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day long" data-id="w9-sat" data-emoji="🎽"><span class="dv">8 mi long</span><span class="dp">11:45–12:30 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Normal rhythm Mon–Thu, then rest Fri–Sun. Aug 24–25 are additional rest before the Thu Aug 27 flight.</p>
     </div>
@@ -338,11 +339,11 @@
       <div class="week-top"><span class="week-label">Travel week 1 <span class="badge b-teal">Maintain</span></span><span class="week-dates">Aug 24 – Aug 30</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day non-workout rest" data-col="0"><span class="dd">Aug 24</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest" data-col="1"><span class="dd">Aug 25</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest" data-col="2"><span class="dd">Aug 26</span><span class="dv">Rest</span></div>
-        <div class="day flight non-workout" data-col="3"><span class="dd">Aug 27</span><span class="dv">✈ Flight to SG</span></div>
-        <div class="day non-workout rest" data-col="4"><span class="dd">Aug 28</span><span class="dv">Rest / arrive</span></div>
+        <div class="day non-workout rest" data-col="0"><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="1"><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="2"><span class="dv">Rest</span></div>
+        <div class="day flight non-workout" data-col="3"><span class="dv">✈ Flight to SG</span></div>
+        <div class="day non-workout rest" data-col="4"><span class="dv">Rest / arrive</span></div>
         <div class="day run" data-col="5" data-id="tw1-sat" data-emoji="🌟"><span class="dd">Aug 29</span><span class="dv">Cardio 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
         <div class="day strength" data-col="6" data-id="tw1-sun" data-emoji="💪"><span class="dd">Aug 30</span><span class="dv">Bodyweight</span></div>
       </div>
@@ -352,7 +353,7 @@
       <div class="week-top"><span class="week-label">Travel week 2 <span class="badge b-teal">Maintain</span></span><span class="week-dates">Aug 31 – Sep 6</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day flight non-workout" data-col="0"><span class="dd">Aug 31</span><span class="dv">✈ SG → Bali</span></div>
+        <div class="day flight non-workout" data-col="0"><span class="dv">✈ SG → Bali</span></div>
         <div class="day run" data-col="1" data-id="tw2-tue" data-emoji="🌟"><span class="dd">Sep 1</span><span class="dv">Cardio 40 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
         <div class="day strength" data-col="2" data-id="tw2-wed" data-emoji="💪"><span class="dd">Sep 2</span><span class="dv">Bodyweight</span></div>
         <div class="day travel-day" data-col="3" data-id="tw2-thu-walk" data-emoji="👟"><span class="dd">Sep 3</span><span class="dv">Walk / explore</span></div>
@@ -367,9 +368,9 @@
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day run" data-col="0" data-id="tw3-mon" data-emoji="🌟"><span class="dd">Sep 7</span><span class="dv">Cardio 30 min</span><span class="dp">easy effort · ≤145 bpm</span></div>
-        <div class="day non-workout rest" data-col="1"><span class="dd">Sep 8</span><span class="dv">Rest</span></div>
-        <div class="day non-workout rest" data-col="2"><span class="dd">Sep 9</span><span class="dv">Rest</span></div>
-        <div class="day flight non-workout" data-col="3"><span class="dd">Sep 10</span><span class="dv">✈ Fly home</span></div>
+        <div class="day non-workout rest" data-col="1"><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="2"><span class="dv">Rest</span></div>
+        <div class="day flight non-workout" data-col="3"><span class="dv">✈ Fly home</span></div>
         <div class="day empty" data-col="4"></div><div class="day empty" data-col="5"></div><div class="day empty" data-col="6"></div>
       </div>
       <p class="week-note">Easy cardio Monday — walk, swim, treadmill, whatever's available. Then rest before the long flight home Thursday. Heat &amp; humidity in SE Asia will push HR higher — slow down to compensate.</p>
@@ -390,9 +391,9 @@
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
         <div class="day empty" data-col="0"></div><div class="day empty" data-col="1"></div><div class="day empty" data-col="2"></div><div class="day empty" data-col="3"></div>
-        <div class="day non-workout rest" data-col="4"><span class="dd">Sep 11</span><span class="dv">Rest / arrive</span></div>
-        <div class="day non-workout rest" data-col="5"><span class="dd">Sep 12</span><span class="dv">Rest / jet lag</span></div>
-        <div class="day non-workout rest" data-col="6"><span class="dd">Sep 13</span><span class="dv">Rest</span></div>
+        <div class="day non-workout rest" data-col="4"><span class="dv">Rest / arrive</span></div>
+        <div class="day non-workout rest" data-col="5"><span class="dv">Rest / jet lag</span></div>
+        <div class="day non-workout rest" data-col="6"><span class="dv">Rest</span></div>
       </div>
       <p class="week-note">Three full rest days after the long-haul return flight before race week begins Monday.</p>
     </div>
@@ -401,13 +402,13 @@
       <div class="week-top"><span class="week-label">Race week <span class="badge b-purple">Taper</span></span><span class="week-dates">Sep 14 – Sep 20</span></div>
       <div class="day-header-row"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div></div>
       <div class="day-grid">
-        <div class="day run" data-id="rw-mon" data-emoji="🏃‍♀️"><span class="dd">Sep 14</span><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 15</span><span class="dv">Rest</span></div>
-        <div class="day tempo" data-id="rw-wed" data-emoji="⚡"><span class="dd">Sep 16</span><span class="dv">3 mi strides</span><span class="dp">1mi wu · 1mi strides · 1mi cd</span></div>
-        <div class="day non-workout rest"><span class="dd">Sep 17</span><span class="dv">Rest</span></div>
-        <div class="day run" data-id="rw-fri" data-emoji="🏃‍♀️"><span class="dd">Sep 18</span><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
-        <div class="day run" data-id="rw-sat" data-emoji="🏃‍♀️"><span class="dd">Sep 19</span><span class="dv">2 mi shakeout</span><span class="dp">very easy · just moving</span></div>
-        <div class="day raceday non-workout"><span class="dd">Sep 20</span><span class="dv">🏁 Race day!</span><span class="dp">Goal: 9:45–10:05 /mi</span></div>
+        <div class="day run" data-id="rw-mon" data-emoji="🏃‍♀️"><span class="dv">4 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day tempo" data-id="rw-wed" data-emoji="⚡"><span class="dv">3 mi strides</span><span class="dp">1mi wu · 1mi strides · 1mi cd</span></div>
+        <div class="day non-workout rest"><span class="dv">Rest</span></div>
+        <div class="day run" data-id="rw-fri" data-emoji="🏃‍♀️"><span class="dv">3 mi easy</span><span class="dp">11:30–12:15 /mi</span></div>
+        <div class="day run" data-id="rw-sat" data-emoji="🏃‍♀️"><span class="dv">2 mi shakeout</span><span class="dp">very easy · just moving</span></div>
+        <div class="day raceday non-workout"><span class="dv">🏁 Race day!</span><span class="dp">Goal: 9:45–10:05 /mi</span></div>
       </div>
       <p class="week-note">No strength this week — legs only. Your fitness from the build phase is locked in. Trust it.</p>
     </div>
@@ -588,6 +589,8 @@
           slots[col] = ws.length ? ws : null;
         } else if (child.classList.contains('day') && child.dataset.id) {
           slots[col] = [extractWorkout(child)];
+        } else if (child.classList.contains('day') && child.classList.contains('rest')) {
+          slots[col] = null; // draggable rest — stored as null, rendered by makeRestCell
         } else {
           slots[col] = null;
         }
@@ -602,6 +605,7 @@
       id:    el.dataset.id,
       cls:   getWorkoutClass(el),
       emoji: el.dataset.emoji || '',
+      dd:    el.querySelector('.dd') ? el.querySelector('.dd').textContent : '',
       label: el.querySelector('.dv') ? el.querySelector('.dv').textContent : '',
       pace:  el.querySelector('.dp') ? el.querySelector('.dp').textContent : '',
     };
@@ -618,6 +622,12 @@
 
   function applyLayoutOverrides() {
     const saved = loadLayout();
+    if (!saved || !Object.keys(saved).length) return;
+    // If saved layout is missing date fields, it's stale — discard it
+    const stale = Object.values(saved).some(slots =>
+      (slots || []).some(slot => (slot || []).some(w => w && w.id && !w.dd))
+    );
+    if (stale) { localStorage.removeItem(LAYOUT_KEY); return; }
     Object.keys(saved).forEach(wid => { if (weekData[wid] !== undefined) weekData[wid] = saved[wid]; });
   }
 
@@ -646,7 +656,6 @@
           const cell = document.createElement('div');
           cell.className = 'day non-workout ' + fixed.cls;
           cell.dataset.col = col; cell.dataset.wid = wid;
-          if (fixed.dd) { const dd = document.createElement('span'); dd.className='dd'; dd.textContent=fixed.dd; cell.appendChild(dd); }
           const dv = document.createElement('span'); dv.className='dv'; dv.textContent=fixed.label; cell.appendChild(dv);
           if (fixed.pace) { const dp = document.createElement('span'); dp.className='dp'; dp.textContent=fixed.pace; cell.appendChild(dp); }
           grid.appendChild(cell);
@@ -693,8 +702,10 @@
 
   function makeRestCell(wid, col) {
     const cell = document.createElement('div');
-    cell.className = 'day non-workout rest';
+    cell.className = 'day rest';
     cell.dataset.col = col; cell.dataset.wid = wid;
+    cell.dataset.id = wid + '-' + col + '-rest';
+    cell.dataset.emoji = '😴';
     const dv = document.createElement('span'); dv.className='dv'; dv.textContent='Rest';
     cell.appendChild(dv);
     return cell;
@@ -721,8 +732,12 @@
     el.addEventListener('dragstart', e => {
       const col = parseInt(el.dataset.col);
       const slot = weekData[wid][col];
+      const isRest = el.classList.contains('rest') && (!slot || slot.length === 0);
       const subIdx = slot ? slot.findIndex(w => w.id === el.dataset.id) : 0;
-      dragState = { wid, col, subIdx, workout: slot ? slot[subIdx] : null };
+      const workout = isRest
+        ? { id: el.dataset.id, cls: 'rest', emoji: '😴', label: 'Rest', pace: '', dd: '' }
+        : (slot ? slot[subIdx] : null);
+      dragState = { wid, col, subIdx: isRest ? 0 : subIdx, workout, isRest };
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', el.dataset.id);
       setTimeout(() => el.classList.add('dragging'), 0);
@@ -746,7 +761,11 @@
         const col = parseInt(el.dataset.col);
         const slot = weekData[wid][col];
         const subIdx = slot ? slot.findIndex(w => w.id === el.dataset.id) : 0;
-        dragState = { wid, col, subIdx, workout: slot ? slot[subIdx] : null };
+        const isRestCell = el.classList.contains('rest') && (!slot || slot.length === 0);
+        const touchWorkout = isRestCell
+          ? { id: el.dataset.id, cls: 'rest', emoji: '😴', label: 'Rest', pace: '', dd: '' }
+          : (slot ? slot[subIdx] : null);
+        dragState = { wid, col, subIdx: isRestCell ? 0 : subIdx, workout: touchWorkout, isRest: isRestCell };
         if (navigator.vibrate) navigator.vibrate(40);
         el.classList.add('dragging');
         touchClone = el.cloneNode(true);
@@ -839,22 +858,30 @@
 
   function handleDrop(target) {
     if (!dragState) return;
-    const { wid: srcWid, col: srcCol, subIdx, workout } = dragState;
+    const { wid: srcWid, col: srcCol, subIdx, workout, isRest } = dragState;
     const destWid = target.dataset.wid;
     const destCol = parseInt(target.dataset.col);
     if (!destWid || isNaN(destCol)) return;
-    if (srcWid === destWid && destCol === srcCol) return; // same slot, no-op
+    if (srcWid === destWid && destCol === srcCol) return;
 
-    // Remove from source
     const srcSlots = weekData[srcWid];
-    const srcSlot = srcSlots[srcCol];
-    if (!srcSlot) return;
-    srcSlot.splice(subIdx, 1);
-    srcSlots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
-
-    // Add to destination
     const destSlots = weekData[destWid];
-    destSlots[destCol] = destSlots[destCol] ? [...destSlots[destCol], workout] : [workout];
+
+    if (isRest) {
+      // Dragging a rest cell: source stays null, dest becomes null (rest)
+      // but only if dest has a workout — swap it to source
+      const destSlot = destSlots[destCol];
+      srcSlots[srcCol] = destSlot && destSlot.length ? destSlot : null;
+      destSlots[destCol] = null;
+    } else {
+      // Remove workout from source
+      const srcSlot = srcSlots[srcCol];
+      if (!srcSlot) return;
+      srcSlot.splice(subIdx, 1);
+      srcSlots[srcCol] = srcSlot.length === 0 ? null : srcSlot;
+      // Add to destination
+      destSlots[destCol] = destSlots[destCol] ? [...destSlots[destCol], workout] : [workout];
+    }
 
     saveLayout(JSON.parse(JSON.stringify(weekData)));
     renderWeek(srcWid);
